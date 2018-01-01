@@ -1,0 +1,355 @@
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+
+html, body {
+    overflow-x: hidden; /* Prevent scroll on narrow devices */
+    background-color: lightgrey;
+/* Required margin for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+body {
+    padding-top: 70px;
+    padding-bottom: 20px;
+
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding-top: 10px;
+    border-top: 1px solid #e9e9e9;
+
+    height: 60px;
+}
+
+/* Margin and padding
+-------------------------------------------------- */
+/*noinspection CssUnusedSymbol*/
+.lg-margin-bottom {
+    margin-bottom: 60px;
+}
+
+.md-margin-bottom {
+    margin-bottom: 40px;
+}
+
+/*noinspection CssUnusedSymbol*/
+.lg-margin-top {
+    margin-top: 60px;
+}
+
+.md-margin-top {
+    margin-top: 40px;
+}
+
+.sm-margin-top {
+    margin-top: 20px;
+}
+
+
+/* Header Image Background - Change the URL below to your image path (example: ../images/background.jpg) */
+
+.full {
+    background: url('assets/bg-1.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+
+.text-middle {
+    display: table-cell;
+    width: 200px;
+    height: 100%;
+    vertical-align: middle
+}
+
+.main-div {
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    display: table;
+    text-align: center;
+    height: 40em;
+}
+
+.center {
+    text-align: center
+}
+
+.hidden-default {
+    display: none;
+}
+
+.top-buffer {
+    margin-top:20px;
+    margin-bottom: 20px;
+
+}
+
+.chart-content {
+}
+
+
+.typeahead,
+.tt-query,
+.tt-hint {
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+
+.typeahead {
+  background-color: #fff;
+}
+
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+
+
+
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-menu {
+  width: 422px;
+  margin: 12px 0;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+.typeahead-index,
+.tt-query,
+.tt-hint {
+    width: 600px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 12px;
+     -moz-border-radius: 12px;
+          border-radius: 12px;
+  outline: none;
+}
+
+.typeahead {
+  background-color: #fff;
+}
+
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+
+
+/* CSS REQUIRED */
+.state-icon {
+    left: -5px;
+}
+.list-group-item-primary {
+    color: rgb(255, 255, 255);
+    background-color: rgb(66, 139, 202);
+}
+
+/* DEMO ONLY - REMOVES UNWANTED MARGIN */
+.well .list-group {
+    margin-bottom: 0px;
+}
+
+/* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.spinner {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba(217,206,206,.40) url('/static/images/ajax-loader.gif') 50% 50% no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .spinner {
+    display: block;
+}
+
+
+.modal-dialog {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.modal-content {
+  height: 100%;
+  border-radius: 0;
+}
+
+#addToWatchlist{
+    float:right;
+}
+
+.floatRight{
+    float:right;
+}
+
+
+.height-full {
+    height: 100vh;
+}
+
+
+
+.container{
+    height: 100%;
+    background-color: white;
+}
+
+.navbar .container{
+    background-color: inherit;
+}
+
+
+.highcharts-container {
+    width:100% !important;
+    height:100% !important;
+}
+
+
+/* Bootstrap overrides
+-------------------------------------------------- */
+label {
+    font-weight: 400;
+}
+
+.checkbox input[type='checkbox'], .checkbox-inline input[type='checkbox'] {
+    margin-left: 0;
+}
+
+/*noinspection CssUnusedSymbol*/
+.alert-small {
+    padding: 5px;
+    margin-bottom: 0;
+}
+
+/*noinspection CssUnusedSymbol,CssUnusedSymbol*/
+.alert-error, .alert-message {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.alert-error hr, .alert-message hr {
+    border-top-color: #e4b9c0;
+}
+
+/*noinspection CssUnusedSymbol,CssUnusedSymbol*/
+.alert-error .alert-link, .alert-message .alert-link {
+    color: #843534;
+}
+
+.col-header {
+    height: 26px;
+}
+
+dd {
+    margin-bottom: 8px;
+}
+
+
+/* Logo */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+.navbar-brand>img {
+    padding: 7px 14px;
+}
+
+.social-btn-container {
+    padding-bottom: 20px;
+}
+
+
+/*https://www.bootply.com/88026*/
+body {
+    padding-top: 70px;
+}
+.text-center {
+    padding-top: 20px;
+}
+.col-xs-12 {
+    background-color: #fff;
+}
+#sidebar {
+    height: 100%;
+    padding-right: 0;
+    padding-top: 20px;
+}
+#sidebar .nav {
+    width: 95%;
+}
+#sidebar li {
+    border:0 #f2f2f2 solid;
+    border-bottom-width:1px;
+}
+
+#flash-messages {
+    margin-left: 50px;
+    margin-right: 50px;
+    text-align: center;
+}

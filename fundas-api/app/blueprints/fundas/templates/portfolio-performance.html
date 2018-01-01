@@ -1,0 +1,81 @@
+{% extends 'layouts/app.html' %}
+
+<!DOCTYPE html>
+<html lang="">
+
+{% block title %}Fundas - Charts{% endblock %}
+
+{% block content %}
+
+    <div class="container top-buffer">
+
+        <div class="form-group top-buffer">
+
+
+      <div class="panel panel-default highcharts-container">
+                <div class="panel-heading">Equity curve</div>
+                <div id="chart" class="highcharts-container"></div>
+            </div>
+
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Summary</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div id="profit" class="col-md-4"></div>
+                        <div id="closedProfit" class="col-md-4"></div>
+                        <div id="totalProfit" class="col-md-4"></div>
+                        <div id="profitPercentage" class="col-md-4"></div>
+                        <div id="cagr" class="col-md-4"></div>
+                        <div id="maxDrawdown" class="col-md-4"></div>
+                        <div id="maxDrawdownPercentage" class="col-md-4"></div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Holdings</div>
+            <div class="panel-body">
+                <table id="holdings" class="display" width="100%"></table>
+            </div>
+        </div>
+
+
+     <div class="panel panel-default">
+            <div class="panel-heading">Closed Positions</div>
+            <div class="panel-body">
+                <table id="closedPositions" class="display" width="100%"></table>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+    </div>
+{% endblock %}
+
+
+{% block appLibraries %}
+    <script src="{{ url_for('static',filename='scripts/vendor/highcharts/highcharts.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/vendor/highcharts/highcharts-more.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/vendor/highcharts/modules/solid-gauge.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/portfolio.js') }}"></script>
+
+    <script src="{{ url_for('static',filename='scripts/vendor/notify.min.js') }}"></script>
+
+    <script src="{{ url_for('static',filename='scripts/portfolio-performance.js') }}"></script>
+{% endblock %}

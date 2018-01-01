@@ -1,0 +1,134 @@
+[
+    {
+        "indicators": "SR,NP,OP",
+        "chartType": "area",
+        "showCompareOption": false,
+        "title": "Annual Performance",
+        "target": "chart-annual-performance",
+        "showPercentage": "false"
+    },
+    {
+        "indicators": "SR,NP,OP",
+        "chartType": "area",
+        "showCompareOption": false,
+        "title": "Quarterly Performance",
+        "target": "chart-quarterly-performance",
+        "showPercentage": "false",
+        "period": "Q"
+    },
+    {
+        "indicators": "OPMPCT,NETPCT,EBIDTPCT",
+        "chartType": "spline",
+        "showCompareOption": false,
+        "title": "Annual Margins",
+        "target": "chart-annual-margins",
+        "showPercentage": "true"
+    },
+    {
+        "indicators": "OPMPCT,NETPCT,EBIDTPCT",
+        "chartType": "spline",
+        "showCompareOption": false,
+        "title": "Quarterly Margins",
+        "target": "chart-quarterly-margins",
+        "showPercentage": "true",
+        "period": "Q"
+    },
+    {
+        "indicators": "NETPCT",
+        "chartType": "spline",
+        "showCompareOption": true,
+        "showBands": true,
+        "title": "Net Margin Comparison",
+        "bandValues": "4,10",
+        "target": "chart-annual-margins-compare",
+        "showPercentage": "true"
+    },
+    {
+        "indicators": "NP,CFO",
+        "chartType": "spline",
+        "showCompareOption": false,
+        "title": "Net Income and Cash from Operations",
+        "target": "chart-annual-ni-cfo",
+        "showPercentage": "false"
+    },
+    {
+        "indicators": "ROE,ROCE",
+        "chartType": "spline",
+        "showCompareOption": false,
+        "showBands": true,
+        "title": "ROE - ROCE",
+        "bandValues": "5,15",
+        "target": "chart-annual-roe-roce",
+        "showPercentage": "true"
+    },
+    {
+        "indicators": "ROCE",
+        "chartType": "spline",
+        "showCompareOption": true,
+        "showBands": true,
+        "title": "ROCE Comparison",
+        "bandValues": "5,15",
+        "target": "chart-annual-roce-comparison",
+        "showPercentage": "true",
+        "compareByDefault": ""
+    },
+    {
+        "indicators": "ROE",
+        "chartType": "spline",
+        "showCompareOption": true,
+        "showBands": true,
+        "title": "ROE Comparison",
+        "bandValues": "5,15",
+        "target": "chart-annual-roe-comparison",
+        "showPercentage": "true",
+        "compareByDefault": ""
+    },
+    {
+        "indicators": "LTDE",
+        "chartType": "spline",
+        "showCompareOption": true,
+        "showBands": true,
+        "showInvertedBands": "true",
+        "title": "Debt to Equity",
+        "bandValues": "3,1",
+        "target": "chart-annual-ltde",
+        "showPercentage": "false",
+        "compareByDefault": ""
+    },
+    {
+        "indicators": "IC",
+        "chartType": "spline",
+        "target": "chart-annual-ic",
+        "title": "Interest Coverage"
+    },
+    {
+        "indicators": "SOLRATIO",
+        "chartType": "spline",
+        "target": "chart-annual-solratio",
+        "title": "Solvency Ratio"
+    },
+    {
+        "indicators": "CROCI,WACC",
+        "chartType": "spline",
+        "target": "chart-annual-croci",
+        "title": "CROCI - WACC Spread"
+    },
+    {
+        "indicators": "DIV",
+        "chartType": "bar",
+        "target": "chart-annual-div",
+        "title": "Dividends"
+    },
+    {
+        "indicators": "PEG",
+        "chartType": "spline",
+        "target": "chart-annual-peg",
+        "title": "PEG Ratio"
+    },
+    {
+        "indicators": "PE",
+        "chartType": "spline",
+        "target": "chart-annual-pe",
+        "title": "PE Ratio"
+    }
+]

@@ -1,0 +1,101 @@
+{% extends 'layouts/base.html' %}
+
+{% block header %}
+  <nav class="navbar navbar-fixed-top navbar-inverse">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button"
+                class="navbar-toggle collapsed"
+                data-toggle="collapse"
+                data-target="#navbar"
+                aria-expanded="false"
+                aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
+
+        <a class="navbar-brand" href="/"><img style="	width: 64px;" src="{{ url_for('static',filename='images/logo-small.png') }}" alt="Fundas">Fundas
+        </a>
+
+      </div>
+
+
+
+
+      <div id="navbar" class="collapse navbar-collapse">
+
+      <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Reports <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" id="annual-reports-nav">Annual</a></li>
+                        <li><a href="#" id="quarterly-reports-nav">Quarterly</a></li>
+                        <li><a href="#" id="fin-ratios-nav">Financial Ratios</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Charts <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" id="valuation-nav">Valuation</a></li>
+                        <li><a href="#" id="performance-nav">Performance</a></li>
+                        <li><a href="#" id="health-nav">Health</a></li>
+                        <li><a href="#" id="dividends-nav">Dividends</a></li>
+                        <li><a href="#" id="fundas-nav">All in one</a></li>
+                    </ul>
+                </li>
+                <li><a id='momentum-nav' href="#">Momentum</a></li>
+                <li><a id='analysis-nav' href="#">Analysis</a></li>
+                <li><a id='watchlist-nav' href="#">Featured</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Portfolio <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a id='portfolio-nav' href="#">Companies</a></li>
+                        <li><a id='portfolio-performance-nav' href="#">Performance</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+        <li>
+            <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <div id="company-div">
+                            <input type="text" id="company" class="form-control typeahead" placeholder="Search"
+                                   name="q">
+                        </div>
+
+
+                    </div>
+                </form>
+        </li>
+          {% if current_user.is_authenticated %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle"
+                 data-toggle="dropdown"
+                 role="button" aria-haspopup="true"
+                 aria-expanded="false">Account
+                <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li class="dropdown-header">Session</li>
+                <li><a href="{{ url_for('user.logout') }}">Log out</a></li>
+              </ul>
+            </li>
+          {% else %}
+            <li><a href="{{ url_for('user.login') }}">Log in</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

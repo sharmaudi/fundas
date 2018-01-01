@@ -1,0 +1,70 @@
+[
+    {
+        "showCompareOption": true,
+        "showBands": false,
+        "showInvertedBands": "true",
+        "indicators": "PEG",
+        "title": "PEG Ratio",
+        "bandValues": "2,1",
+        "target": "chart-annual-peg",
+        "chartType": "spline"
+    },
+    {
+        "showCompareOption": true,
+        "showBands": true,
+        "showInvertedBands": "true",
+        "indicators": "PE",
+        "title": "PE Ratio",
+        "bandValues": "25,15",
+        "target": "chart-annual-pe",
+        "chartType": "spline"
+    },
+    {
+        "showCompareOption": true,
+        "showBands": true,
+        "showInvertedBands": "true",
+        "indicators": "PBV",
+        "title": "PBV Ratio",
+        "bandValues": "2,1",
+        "target": "chart-annual-pb",
+        "chartType": "spline"
+    },
+    {
+        "indicators": "CROCI,WACC",
+        "chartType": "spline",
+        "target": "chart-annual-croci",
+        "title": "CROCI - WACC Spread"
+    },
+    {
+        "indicators": "PS",
+        "chartType": "spline",
+        "target": "chart-ps",
+        "title": "Price to Sales",
+        "showCompareOption": true
+
+    },
+    {
+        "indicators": "EV",
+        "chartType": "spline",
+        "target": "chart-annual-ev",
+        "title": "Enterprise value",
+        "showCompareOption": true
+
+    },
+    {
+        "indicators": "EVEBIDTA",
+        "chartType": "spline",
+        "target": "chart-annual-evebidta",
+        "title": "Enterprise value to EBITDA",
+        "showCompareOption": true
+
+    },
+    {
+        "indicators": "EVREV",
+        "chartType": "spline",
+        "target": "chart-annual-evrev",
+        "title": "Enterprise value to Sales",
+        "showCompareOption": true
+
+    }
+]

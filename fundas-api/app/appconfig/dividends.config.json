@@ -1,0 +1,25 @@
+[
+    {
+        "indicators": "DIV",
+        "chartType": "bar",
+        "target": "chart-annual-div",
+        "title": "Dividends"
+    },
+    {
+        "indicators": "DIVPAY",
+        "chartType": "spline",
+        "target": "chart-annual-divpay",
+        "showCompareOption": true,
+        "showPercentage": "true",
+        "title": "Dividend payout"
+    },
+    {
+        "indicators": "DIVYLD",
+        "chartType": "spline",
+        "target": "chart-annual-divyld",
+        "title": "Dividend yield",
+        "showCompareOption": true,
+        "showPercentage": "true"
+
+    }
+]

@@ -1,0 +1,896 @@
+import ast
+import datetime
+import sqlite3
+import sys
+import traceback
+
+import numpy as np
+import pandas as pd
+import quandl
+import redis
+from sqlalchemy import create_engine
+
+from app.util.Screener import Screener
+
+# Init Redis
+r = redis.StrictRedis(host='redis', port=6379, db=1)
+
+r_full = redis.StrictRedis(host='redis', port=6379, db=3)
+
+BROKER_URL = 'redis://redis:6379/2'
+
+q_api_key = 'R27JMJXy2W-fLV6LX48P'
+
+engine = create_engine("postgresql://fundas:{}@{}:{}/fundas".format(
+    'devpassword',
+    'localhost',
+    '5432'
+))
+
+screener_name_mismatch = {
+    'AVANTI': 'AVANTIFEED',
+    'POKARNA': '532486',
+    'GKB': '533212',
+    'ORICON': 'ORICONENT',
+    'TPLPLAST': 'TPLPLASTEH',
+    'IBSEC': 'IBVENTURES',
+    'SHIRPURG': 'SHIRPUR-G',
+    'HCLINSYS': 'HCL-INSYS',
+    'ILFSTRANS': 'IL&FSTRANS',
+    'LTFH': 'L&TFH'
+}
+
+quandl_name_mismatch = {
+    'AVANTI': 'AVANTIFEED',
+    'ORICON': 'ORICONENT',
+    'TPLPLAST': 'TPLPLASTEH',
+    'IBSEC': 'IBVENTURES',
+    'SHIRPURG': 'SHIRPUR-G',
+    'HCLINSYS': 'HCL-INSYS'
+
+}
+
+indicators_available_quarterly = [
+    'ETR',
+    'DEP',
+    'EBIDT',
+    'EPS',
+    'EBIDTSH',
+    'TAX',
+    'INT',
+    'NP',
+    'SHARE',
+    'OP',
+    'OI',
+    'SR',
+    'REVSH',
+    'DIV',
+    'EBIDTPCT',
+    'IBTPCT',
+    'NETPCT',
+    'OPMSH',
+    'OPMPCT',
+    'LBETA',
+    'MCAP',
+    'BSEVOL',
+    'BSEC',
+    'BSEH',
+    'BSEL',
+    'BSEO',
+    'NNPARAT',
+    'GNPARAT',
+    'FV',
+    'ATM',
+    'NIM',
+    'MIPL',
+    'CAPADQ',
+    'OEXPNS',
+    'PATBC',
+    'CASARAT',
+    'PBDT',
+    'TIER1',
+    'TIER2',
+    'EPSEXC',
+    'EXCEP',
+    'PROVCOV',
+    'CASA',
+    'GNPA',
+    'BRANCH',
+    'PROV',
+    'NNPA',
+    'TI',
+    'ASSOC'
+]
+
+
+def get_data_old(company, indicator, get_quarterly=False):
+    pdaq = 'A'
+    if get_quarterly:
+        pdaq = 'Q'
+    key = company + '_' + indicator + "_" + pdaq
+    data = r.get(key)
+
+    if not data:
+        data = get_data_internal(company, indicator, get_quarterly)
+        r.set(key, data)
+    return data
+    # Run a background job for caching all the relevant data
+
+
+def get_all_dataframes(company):
+    df_standalone__a = pd.read_json(r_full.get(company + "_A_STANDALONE"))
+    df_consolidated__a = pd.read_json(r_full.get(company + "_A_CONSOLIDATED"))
+    df_standalone__q = pd.read_json(r_full.get(company + "_Q_STANDALONE"))
+    df_consolidated__q = pd.read_json(r_full.get(company + "_Q_CONSOLIDATED"))
+
+    return ({'annual_consolidated': df_consolidated__a,
+             'annual_standalone': df_standalone__a,
+             'quarterly_standalone': df_standalone__q,
+             'quarterly_consolidated': df_consolidated__q
+             })
+
+
+def get_pe_from_screener(company):
+    screener = None
+    pe_standalone = None
+    pe_consolidated = None
+    try:
+        screener = get_screener(company)
+    except:
+        print('Error while initializing screener')
+
+    if screener:
+        try:
+            pe_standalone = screener.get_pe(standalone=True)
+        except:
+            print('Error while getting standalone PE from screener for company {}'.format(company))
+
+        try:
+            pe_consolidated = screener.get_pe()
+        except:
+            print('Error while getting consolidated PE from screener for company {}'.format(company))
+    return pe_standalone, pe_consolidated
+
+
+def read_sql(sql, company_name):
+    return pd.read_sql(sql.format('annual_standalone'),
+                       engine,
+                       params=[company_name],
+                       parse_dates=['date']
+                       ).set_index('date')
+
+
+def get_company_dataframe(company_name, indicators=None):
+    sql = "SELECT * FROM {} WHERE symbol=%s"
+
+    df_a_s = pd.read_sql(sql.format('annual_standalone'),
+                         engine,
+                         params=[company_name],
+                         parse_dates=['date']
+                         ).set_index('date')
+
+    df_a_c = pd.read_sql(sql.format('annual_consolidated'),
+                         engine,
+                         params=[company_name],
+                         parse_dates=['date']
+                         ).set_index('date')
+
+    df_q_s = pd.read_sql(sql.format('quarterly_standalone'),
+                         engine,
+                         params=[company_name],
+                         parse_dates=['date']
+                         ).set_index('date')
+
+    df_q_c = pd.read_sql(sql.format('quarterly_consolidated'),
+                         engine,
+                         params=[company_name],
+                         parse_dates=['date']
+                         ).set_index('date')
+
+    return {
+        'annual_standalone': df_a_s,
+        'annual_consolidated': df_a_c,
+        'quarterly_standalone': df_q_s,
+        'quarterly_consolidated': df_q_c
+    }
+
+
+def get_data_new(company_name, indicators=None):
+    company_dfs = get_company_dataframe(company_name, indicators)
+
+    df_a_s = company_dfs['annual_standalone'].reset_index().set_index('date_str').drop('date', 1)
+
+    df_a_c = company_dfs['annual_consolidated'].reset_index().set_index('date_str').drop('date', 1)
+
+    df_q_s = company_dfs['quarterly_standalone'].reset_index().set_index('date_str').drop('date', 1)
+
+    df_q_c = company_dfs['quarterly_consolidated'].reset_index().set_index('date_str').drop('date', 1)
+
+    return {
+        'annual_standalone': {
+            'index': df_a_s.transpose().index.tolist(),
+            'data': df_a_s.transpose().to_dict(orient='split')
+        },
+        'annual_consolidated': {
+            'index': df_a_c.transpose().index.tolist(),
+            'data': df_a_c.transpose().to_dict(orient='split')
+        },
+        'quarterly_standalone': {
+            'index': df_q_s.transpose().index.tolist(),
+            'data': df_q_s.transpose().to_dict(orient='split')
+        },
+        'quarterly_consolidated': {
+            'index': df_q_c.transpose().index.tolist(),
+            'data': df_q_c.transpose().to_dict(orient='split')
+        }
+    }
+
+
+def analyse_company(company_name, company_dataframe=None):
+    if not company_dataframe:
+        company_dataframe = get_company_dataframe(company_name)
+    valuation_checks = []
+    return None
+
+
+def perform_valuation_checks(df):
+    df = df.sort_index(ascending=False)
+    latest = get_latest_non_zero(df, ['PE', 'PEG', 'PBV', 'EVEBIDTA'])
+    valuation_checks = [{
+        'id': 'valuation_check1',
+        'rule': 'PE Ratio < 20',
+        'outcome': (latest.PE < 20).tolist()[0],
+        'lhs': latest.PE.tolist()[0],
+        'rhs': 20
+    }, {
+        'id': 'valuation_check2',
+        'rule': 'PE Ratio < 5 year average PE',
+        'outcome': (latest.PE < df.head(5).PE.mean()).tolist()[0],
+        'lhs': latest.PE.tolist()[0],
+        'rhs': df.head(5).PE.mean()
+    }, {
+        'id': 'valuation_check3',
+        'rule': 'PE Ratio < All time Average PE',
+        'outcome': (latest.PE < df.PE.mean()).tolist()[0],
+        'lhs': latest.PE.tolist()[0],
+        'rhs': df.PE.mean()
+    }, {
+        'id': 'valuation_check4',
+        'rule': 'PEG Ratio is within 0 and 1',
+        'outcome': (latest.PEG < 1).tolist()[0] and (latest.PEG > 0).tolist()[0],
+        'lhs': latest.PEG.tolist()[0],
+        'rhs': [0, 1]
+    }, {
+        'id': 'valuation_check5',
+        'rule': 'Price to book value is less than 2',
+        'outcome': (latest.PBV < 2).tolist()[0],
+        'lhs': latest.PBV.tolist()[0],
+        'rhs': 2
+    }, {
+        'id': 'valuation_check6',
+        'rule': 'EV/EBITDA < 10',
+        'outcome': (latest.EVEBIDTA < 10).tolist()[0],
+        'lhs': latest.EVEBIDTA.tolist()[0],
+        'rhs': 10
+    }
+    ]
+
+    return valuation_checks
+
+
+def perform_performance_checks(df):
+    df = df.sort_index(ascending=False)
+    latest = get_latest_non_zero(df, [
+        'CEPS',
+        'EPS',
+        'ROE',
+        'ROCE',
+        'ROA',
+        'CROCI',
+        'NETPCT'
+    ])
+    checks = [{
+        'id': 'performance_check1',
+        'rule': 'Cash EPS > EPS',
+        'outcome': (latest.CEPS > latest.EPS).tolist()[0],
+        'lhs': latest.CEPS.tolist()[0],
+        'rhs': latest.EPS.tolist()[0]
+    }, {
+        'id': 'performance_check2',
+        'rule': 'EPS is greater than EPS 5 years ago',
+        'outcome': latest.EPS.tolist()[0] > df.EPS.iloc[[5]].tolist()[0],
+        'lhs': latest.EPS.tolist()[0],
+        'rhs': df.EPS.iloc[[5]].tolist()[0]
+    }, {
+        'id': 'performance_check3',
+        'rule': 'ROE is greater than 20%',
+        'outcome': (latest.ROE * 100 > 20).tolist()[0],
+        'lhs': (latest.ROE * 100).tolist()[0],
+        'rhs': 20
+    }, {
+        'id': 'performance_check4',
+        'rule': 'ROCE is greater than ROCE 3 years ago',
+        'outcome': (latest.ROCE * 100).tolist()[0] > (df.ROCE * 100).iloc[[3]].tolist()[0],
+        'lhs': (latest.ROCE * 100).tolist()[0],
+        'rhs': (df.ROCE * 100).iloc[[3]].tolist()[0]
+    }, {
+        'id': 'performance_check5',
+        'rule': 'ROA is greater than 10%',
+        'outcome': (latest.ROA * 100 > 10).tolist()[0],
+        'lhs': (latest.ROA * 100).tolist()[0],
+        'rhs': 10
+    }, {
+        'id': 'performance_check6',
+        'rule': 'ROA > 5 year average ROA',
+        'outcome': (latest.ROA > df.head(5).ROA.mean()).tolist()[0],
+        'lhs': latest.ROA.tolist()[0] * 100,
+        'rhs': df.head(5).ROA.mean() * 100
+    }, {
+        'id': 'performance_check7',
+        'rule': 'CROCI > 3 year average CROCI',
+        'outcome': (latest.CROCI > df.head(3).CROCI.mean()).tolist()[0],
+        'lhs': latest.CROCI.tolist()[0] * 100,
+        'rhs': df.head(3).CROCI.mean() * 100
+    }, {
+        'id': 'performance_check8',
+        'rule': 'Net Profit Margin > 3 year average Net Profit Margin',
+        'outcome': (latest.NETPCT > df.head(3).NETPCT.mean()).tolist()[0],
+        'lhs': latest.NETPCT.tolist()[0] * 100,
+        'rhs': df.head(3).NETPCT.mean() * 100
+    }
+    ]
+    return checks
+
+
+def get_latest_non_zero(df, indicator_list=None):
+    df = df.sort_index(ascending=False)
+    latest = df.iloc[[0]]
+    if indicator_list:
+        test = df.iloc[[0]][indicator_list]
+    else:
+        test = df.iloc[[0]]
+
+    if pd.isnull(test.all):
+        latest = df.iloc[[1]]
+
+    if (test == 0).all(axis=1).tolist()[0]:
+        latest = df.iloc[[1]]
+
+    return latest
+
+
+def perform_health_checks(df):
+    df = df.sort_index(ascending=False)
+    latest = get_latest_non_zero(df, [
+        'CRATIO',
+        'SOLRATIO',
+        'LTDE',
+        'IC',
+        'DEBT_ASSETS',
+        'CFO'
+    ])
+    checks = [{
+        'id': 'health_check1',
+        'rule': 'Current Ratio > 1',
+        'outcome': (latest.CRATIO > 1).tolist()[0],
+        'lhs': latest.CRATIO.tolist()[0],
+        'rhs': 1
+    }, {
+        'id': 'health_check2',
+        'rule': 'Solvency Ratio > .2',
+        'outcome': (latest.SOLRATIO > .2).tolist()[0],
+        'lhs': latest.SOLRATIO.tolist()[0],
+        'rhs': .2
+    }, {
+        'id': 'health_check3',
+        'rule': 'Solvency ratio is greater than Solvency ratio 3 years ago',
+        'outcome': (latest.SOLRATIO).tolist()[0] > (df.SOLRATIO).iloc[[3]].tolist()[0],
+        'lhs': (latest.SOLRATIO).tolist()[0],
+        'rhs': (df.SOLRATIO).iloc[[3]].tolist()[0]
+    }, {
+        'id': 'health_check4',
+        'rule': 'Debt to equity is less than Debt to equity 5 years ago',
+        'outcome': (latest.LTDE).tolist()[0] < (df.LTDE).iloc[[5]].tolist()[0],
+        'lhs': (latest.LTDE).tolist()[0],
+        'rhs': (df.LTDE).iloc[[5]].tolist()[0]
+    }, {
+        'id': 'health_check5',
+        'rule': 'Debt to Equity < 1',
+        'outcome': (latest.LTDE < 1).tolist()[0],
+        'lhs': latest.LTDE.tolist()[0],
+        'rhs': 1
+    }, {
+        'id': 'health_check6',
+        'rule': 'Interest Coverage > 5',
+        'outcome': (latest.IC > 5).tolist()[0],
+        'lhs': latest.IC.tolist()[0],
+        'rhs': 5
+    }, {
+        'id': 'health_check7',
+        'rule': 'Debt to Assets < .7',
+        'outcome': (latest.DEBT_ASSETS < .7).tolist()[0],
+        'lhs': latest.DEBT_ASSETS.tolist()[0],
+        'rhs': .7
+    }, {
+        'id': 'health_check8',
+        'rule': 'Cash from operations 3 year average > Net profit 3 year average',
+        'outcome': (df.CFO.head(3).mean() > df.NP.head(3).mean()),
+        'lhs': df.CFO.head(3).mean(),
+        'rhs': df.NP.head(3).mean()
+    }
+    ]
+    return checks
+
+
+def perform_dividend_checks(df):
+    df = df.sort_index(ascending=False)
+    get_latest_non_zero(df, ['DIV', 'DIVPAY', 'DIVYLD'])
+
+    checks = [{
+        'id': 'div_check1',
+        'rule': 'Dividend yield > 3%',
+        'outcome': (latest.DIVYLD > .03).tolist()[0],
+        'lhs': latest.DIVYLD.tolist()[0] * 100,
+        'rhs': .03 * 100
+    }, {
+        'id': 'div_check2',
+        'rule': 'Latest dividend increased more than 25% since 3 years ago',
+        'outcome': (latest.DIV).tolist()[0] * .75 > (df.DIV).iloc[[3]].tolist()[0],
+        'lhs': (latest.DIV).tolist()[0] * .75,
+        'rhs': (df.DIV).iloc[[3]].tolist()[0]
+    }, {
+        'id': 'div_check3',
+        'rule': 'Latest dividend increased more than 50% since 6 years ago',
+        'outcome': (latest.DIV).tolist()[0] * .5 > (df.DIV).iloc[[6]].tolist()[0],
+        'lhs': (latest.DIV).tolist()[0] * .5,
+        'rhs': (df.DIV).iloc[[6]].tolist()[0]
+    }, {
+        'id': 'div_check4',
+        'rule': 'Dividend payout between 10% and 60%',
+        'outcome': (latest.DIVPAY > .1).tolist()[0] and (latest.DIVPAY < .6).tolist()[0],
+        'lhs': latest.DIVPAY.tolist()[0] * 100,
+        'rhs': [10, 60]
+    }
+
+    ]
+
+    return checks
+
+
+# noinspection PyBroadException
+def get_data(company, indicator, get_quarterly=False, use_screener=True):
+    if not get_quarterly:
+        df_standalone_full = pd.read_json(r_full.get(company + "_A_STANDALONE"))
+        df_consolidated_full = pd.read_json(r_full.get(company + "_A_CONSOLIDATED"))
+    else:
+        df_standalone_full = pd.read_json(r_full.get(company + "_Q_STANDALONE"))
+        df_consolidated_full = pd.read_json(r_full.get(company + "_Q_CONSOLIDATED"))
+    indicator_list = []
+
+    if isinstance(indicator, str):
+        indicator_list.append(indicator)
+    else:
+        indicator_list = indicator
+
+    series_standalone = []
+    series_consolidated = []
+
+    for indicator in indicator_list:
+        try:
+            df_standalone = df_standalone_full[indicator].dropna()
+            df_consolidated = df_consolidated_full[indicator].dropna()
+            if indicator == 'PE' and use_screener:
+                pe_standalone, pe_consolidated = get_pe_from_screener(company)
+
+                if pe_standalone:
+                    new_df_standalone = pd.Series([pe_standalone], index=[datetime.datetime.now().date()])
+                    df_standalone = df_standalone.append(new_df_standalone)
+
+                if pe_consolidated:
+                    new_df_consolidated = pd.Series([pe_consolidated], index=[datetime.datetime.now().date()])
+                    df_consolidated = df_consolidated.append(new_df_consolidated)
+
+            series_standalone.append({'Metric': indicator,
+                                      'Index': df_standalone.index.tolist(),
+                                      'Data': df_standalone.fillna(0).tolist(),
+                                      'PctChange1Y': get_percent_change(df_standalone),
+                                      'PctChange5Y': get_percent_change(df_standalone, step=5),
+                                      'Mean': get_mean(df_standalone),
+                                      'Success': 'True',
+                                      'Message': '',
+                                      'Mean_5_YR': get_mean(df_standalone, tail=5)
+                                      })
+            series_consolidated.append({'Metric': indicator,
+                                        'Index': df_consolidated.index.tolist(),
+                                        'Data': df_consolidated.fillna(0).tolist(),
+                                        'PctChange1Y': get_percent_change(df_consolidated),
+                                        'PctChange5Y': get_percent_change(df_consolidated, step=5),
+                                        'Mean': get_mean(df_consolidated),
+                                        'Mean_5_YR': get_mean(df_consolidated, tail=5),
+                                        'Success': 'True',
+                                        'Message': '',
+
+                                        })
+        except:
+            series_standalone.append(
+                {'Metric': indicator,
+                 'Success': 'False',
+                 'Message': 'Error while getting indicator : ' + indicator})
+            series_consolidated.append(
+                {'Metric': indicator,
+                 'Success': 'False',
+                 'Message': 'Error while getting indicator : ' + indicator})
+
+    my_dict = {}
+    my_dict.update({"Company": "{}".format(company)})
+    my_dict.update({"Standalone": series_standalone})
+    my_dict.update({"Consolidated": series_consolidated})
+    return my_dict
+
+
+def get_percent_change(df, step=1):
+    try:
+        r_list = (df.pct_change(step) * 100).fillna('').df.replace([np.inf, -np.inf], '').tolist()
+    except:
+        r_list = []
+    return r_list
+
+
+def get_mean(df, tail=0):
+    try:
+        if tail == 0:
+            mean = df.mean()
+        else:
+            mean = df.tail(tail).mean()
+    except:
+        mean = 0
+    return mean
+
+
+def get_median(df):
+    try:
+        mean = df.median()
+    except:
+        mean = 0
+    return mean
+
+
+def get_data_internal(company, indicator, get_quarterly=False):
+    if get_quarterly:
+        period = 'Q'
+    else:
+        period = 'A'
+    conn = sqlite3.connect('test.db')
+    query = 'SELECT * ' \
+            'FROM FUNDAS WHERE indicator=? AND period=? AND symbol = ?'
+    params = None
+    if isinstance(company, str):
+        params = [indicator, period, company]
+    elif isinstance(company, list):
+        query = "SELECT * FROM FUNDAS WHERE" \
+                " indicator=? and period=? and symbol in ({seq})".format(seq=','.join(['?'] * len(company)))
+        params = [indicator, period] + company
+
+    result_set = pd.read_sql(
+        query,
+        con=conn,
+        params=params, parse_dates=['date'],
+        columns=['symbol', 'period', 'standalone', 'consolidated'])
+    print('get_data_internal() - Completed Operation.')
+    return result_set.to_json(orient='records', date_format='iso')
+
+
+def get_all_data(symbol, period='A'):
+    query = 'SELECT * FROM FUNDAS WHERE symbol = ? AND period = ?'
+    params = [symbol, period]
+    conn = sqlite3.connect('test.db')
+    result_set = pd.read_sql(query, con=conn, params=params, parse_dates=['date'])
+    return result_set
+
+
+def get_all(period='A'):
+    conn = sqlite3.connect('test.db')
+    query = 'SELECT * FROM FUNDAS WHERE period=?'
+    params = [period]
+    return pd.read_sql(query, con=conn, params=params, parse_dates=['date'])
+
+
+def get_all_symbols_new():
+    sql = "SELECT symbol FROM latest_s_a"
+    return pd.read_sql(sql, engine)['symbol'].tolist()
+
+
+def get_all_symbols():
+    return_set = r_full.get('NSE_ALL_SYMBOLS')
+    if return_set:
+        return_set = return_set.decode('UTF-8')
+        x = ast.literal_eval(return_set)
+        x = [n.strip() for n in x]
+        return x
+    else:
+        query = 'SELECT DISTINCT symbol FROM FUNDAS'
+        conn = sqlite3.connect('test.db')
+        cur = conn.cursor()
+        cur.execute(query)
+        all_symbols = cur.fetchall()
+        return_set = []
+        for row in all_symbols:
+            return_set.append(row[0])
+        r_full.set('NSE_ALL_SYMBOLS', return_set)
+    return return_set
+
+
+def create_redis_database(create_quarterly=False, nifty_pe='23.08'):
+    identifier = '_A'
+    if create_quarterly:
+        big_frame = get_all(period='Q')
+        identifier = '_Q'
+    else:
+        big_frame = get_all()
+    grouped = big_frame.groupby('symbol')
+    i = 0
+    total_symbols = len(grouped)
+    for g, df in grouped:
+        i += 1
+        pivot_standalone = df.pivot(index='date', columns='indicator', values='standalone')
+        pivot_consolidated = df.pivot(index='date', columns='indicator', values='consolidated')
+        r_full.set(g + identifier + "_STANDALONE", pivot_standalone.to_json())
+        r_full.set(g + identifier + "_CONSOLIDATED", pivot_consolidated.to_json())
+        progress = (i / total_symbols) * 100
+        print('Progress: {0:.2f}'.format(progress))
+    r_full.set('NIFTY_PE', nifty_pe)
+
+
+def get_indicator_set(comp, indicator_list, use_screener=True):
+    return_set = {}
+    obj_consolidated = r_full.get('{}_A_CONSOLIDATED'.format(comp))
+    obj_standalone = r_full.get('{}_A_STANDALONE'.format(comp))
+
+    if not obj_consolidated and not obj_standalone:
+        print('Company {} not found in the database.'.format(comp))
+        return return_set
+
+    if obj_consolidated:
+        df_c = pd.read_json(obj_consolidated)
+    if obj_standalone:
+        df_s = pd.read_json(obj_standalone)
+
+    indicator_set_consolidated = {}
+    indicator_set_standalone = {}
+
+    if use_screener:
+        screener_failed = False
+        try:
+            screener = get_screener(comp)
+            pe = screener.get_pe()
+            pe_standalone = screener.get_pe(standalone=True)
+            indicator_set_standalone.update({'PE': pe_standalone})
+            indicator_set_consolidated.update({'PE': pe})
+            bv = screener.get_book_value()
+            bv_standalone = screener.get_book_value(standalone=True)
+
+            current_price = screener.get_current_price()
+
+            pbv = np.nan
+            pbv_standalone = np.nan
+            if bv:
+                pbv = current_price / bv
+
+            if bv_standalone:
+                pbv_standalone = current_price / bv_standalone
+
+            indicator_set_standalone.update({'PBV': pbv_standalone})
+            indicator_set_consolidated.update({'PBV': pbv})
+
+        except:
+            print('Error while getting data from screener')
+            traceback.print_exc(file=sys.stdout)
+            screener_failed = True
+    else:
+        screener_failed = True
+
+    other_indicators = indicator_list
+
+    if screener_failed:
+        other_indicators += ['PE', 'PBV']
+
+    for ind in other_indicators:
+        try:
+            if not df_c.empty:
+                result_c = df_c[ind].loc[df_c[ind].last_valid_index()]
+            else:
+                result_c = np.nan
+
+            indicator_set_consolidated.update({ind: result_c})
+        except:
+            indicator_set_consolidated.update({ind: np.nan})
+
+        try:
+            if not df_s.empty:
+                result_s = df_s[ind].loc[df_s[ind].last_valid_index()]
+            else:
+                result_s = np.nan
+            indicator_set_standalone.update({ind: result_s})
+        except:
+            indicator_set_standalone.update({ind: np.nan})
+
+    return_set.update({
+        'company': comp,
+        'standalone': indicator_set_standalone,
+        'consolidated': indicator_set_consolidated
+
+    })
+    return return_set
+
+
+def get_screener(company):
+    s_comp = company
+    if company in screener_name_mismatch.keys():
+        s_comp = screener_name_mismatch[company]
+    return Screener(s_comp)
+
+
+def get_industry_data(company, use_screener=True):
+    screener = get_screener(company)
+    related = []
+
+    try:
+        related = screener.get_related_companies()
+        industry = screener.industry
+    except:
+        print("Error while getting related companies from Screener")
+        return {}
+    if company not in related:
+        related.append(company)
+    industry_dict = {}
+    indicator_list = ['MCAP', 'EPS5', 'ROA', 'CROCI', 'DIVYLD', 'EPS1', 'PEG', 'PE', 'PBV', 'LTDE', 'ROE', 'ROCE',
+                      'NETPCT', 'CRATIO', 'SOLRATIO', 'LTDE', 'IC', 'DEBT_ASSETS', 'EVEBIDTA']
+    for comp in related:
+        comp_dict = {}
+        indicator_set = get_indicator_set(comp, indicator_list, use_screener=use_screener)
+        if indicator_set:
+            std = indicator_set['standalone']
+            con = indicator_set['consolidated']
+            for i in indicator_list:
+                val = con[i] if con[i] else std[i]
+                if val:
+                    comp_dict.update({i: val})
+                else:
+                    comp_dict.update({i: np.nan})
+                industry_dict.update({comp: comp_dict})
+
+    adf = pd.DataFrame.from_dict(industry_dict, orient='index')
+
+    adf['Weights'] = (adf.MCAP / adf.MCAP.sum() * 100)
+    indicators = adf.columns.tolist()
+    indicators.remove('Weights')
+    indicators.remove('MCAP')
+
+    industry_dict = {'companies': related}
+    industry_dict.update({'industry': industry})
+    for i in indicators:
+        c = adf[i].loc[company]
+        a = adf[i].mean()
+        wa = (adf[i] * adf['Weights']).sum() / adf['Weights'].sum()
+
+        if not c or np.isnan(c):
+            c = 0
+
+        if not a or np.isnan(a):
+            a = 0
+
+        if not wa or np.isnan(wa):
+            wa = 0
+
+        industry_dict.update({
+            i: {
+                'company': c,
+                'average': a,
+                'weighed_average': wa
+            }
+        })
+        nifty_pe_str = r_full.get('NIFTY_PE').decode('UTF-8')
+        industry_dict.update({'nifty_pe': float(nifty_pe_str)})
+        industry_dict.update({'cash_saving_rate': 5.0})
+
+    return industry_dict
+
+
+def get_momentum(company, lookback=20):
+    if company in quandl_name_mismatch.keys():
+        company = quandl_name_mismatch[company]
+    key = 'NSE/{}'.format(company)
+    #    print("Key is : {}".format(key))
+    df = quandl.get(key, authtoken=q_api_key, returns='pandas', collapse='weekly', trim_start='01-01-12')
+    df['Momentum'] = df.Close.pct_change(lookback).dropna() * 100
+    return df.dropna()
+
+
+def get_technicals(company):
+    tech_dict = {}
+    ret_dict = {}
+    s_dict = {}
+    c_dict = {}
+
+    mom_df = get_momentum(company)
+
+    high_52_week = mom_df.tail(52).Close.max()
+    high_all_time = mom_df.Close.max()
+
+    if np.isnan(high_52_week):
+        high_52_week = 0
+
+    if np.isnan(high_all_time):
+        high_all_time = 0
+
+    tech_dict.update({'Momentum': mom_df['Momentum'].tolist()})
+    tech_dict.update({'Date': mom_df.index.tolist()})
+    tech_dict.update({'Price': mom_df.Close.tolist()})
+    tech_dict.update({'52WHigh': high_52_week})
+    tech_dict.update({'AllTimeHigh': high_all_time})
+
+    ret_dict.update({'Technicals': tech_dict})
+
+    q_growth = get_all_dataframes(company)['quarterly_standalone'][['SR', 'NP']]
+    q_growth_c = get_all_dataframes(company)['quarterly_consolidated'][['SR', 'NP']]
+    try:
+        q_growth['SR_G'] = q_growth.SR.pct_change(1) * 100
+        q_growth['NP_G'] = q_growth.NP.pct_change(1) * 100
+
+        q_growth = q_growth.dropna()
+
+        s_dict.update({'Date': q_growth.index.tolist()})
+        s_dict.update({'SR_G': q_growth.SR_G.tolist()})
+        s_dict.update({'NP_G': q_growth.NP_G.tolist()})
+    except:
+        print('Error while getting standalone figures for company {}'.format(company))
+
+    try:
+        q_growth_c['SR_G'] = q_growth_c.SR.pct_change(1) * 100
+        q_growth_c['NP_G'] = q_growth_c.NP.pct_change(1) * 100
+
+        q_growth_c = q_growth_c.dropna()
+        c_dict.update({'Date': q_growth_c.index.tolist()})
+        c_dict.update({'SR_G': q_growth_c.SR_G.tolist()})
+        c_dict.update({'NP_G': q_growth_c.NP_G.tolist()})
+    except:
+        print('Error while getting consolidated figures for company {}'.format(company))
+
+    ret_dict.update({'Standalone': s_dict})
+    ret_dict.update({'Consolidated': c_dict})
+    ret_dict.update({'Company': company})
+
+    return ret_dict
+
+
+def get_watchlist():
+    return_set = r_full.get('WATCHLIST')
+    if return_set:
+        return_set = return_set.decode('UTF-8')
+        print(return_set)
+        if return_set:
+            x = ast.literal_eval(return_set)
+            x = {n.strip() for n in x}
+            return x
+    else:
+        return set()
+
+
+def set_watchlist(watchlist):
+    r_full.set('WATCHLIST', watchlist)
+
+
+def add_to_watchlist(company):
+    orig_list = get_watchlist()
+    orig_list.add(company)
+    set_watchlist(orig_list)
+
+
+def remove_from_watchlist(company):
+    orig_list = get_watchlist()
+    if company in orig_list:
+        orig_list.remove(company)
+    if orig_list:
+        set_watchlist(orig_list)
+    else:
+        r_full.delete('WATCHLIST')

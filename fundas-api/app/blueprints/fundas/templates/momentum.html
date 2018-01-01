@@ -1,0 +1,46 @@
+{% extends 'layouts/app.html' %}
+
+<!DOCTYPE html>
+<html lang="">
+
+{% block title %}Fundas - Charts{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+
+
+
+
+
+
+    <div class='col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1' id="tech-chart"></div>
+
+            <div class='col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1' id="rocChart"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- Modal -->
+
+    </div>
+{% endblock %}
+
+
+{% block appLibraries %}
+    <script src="{{ url_for('static',filename='scripts/vendor/highcharts/highstock.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/vendor/notify.min.js') }}"></script>
+        <script src="{{ url_for('static',filename='scripts/momentum.js') }}"></script>
+
+
+    {#    <script src="{{ url_for('static',filename='checkboxes.js') }}"></script>#}
+{% endblock %}

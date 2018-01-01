@@ -1,0 +1,87 @@
+{% extends 'layouts/app.html' %}
+
+{% block title %}Fundas - Charts{% endblock %}
+{% block meta_description %}Charts page of the fundas application{% endblock %}
+
+{% block body %}
+
+   <div class="container top-buffer">
+
+<div class="form-group top-buffer">
+    <label for="type">Data Type(All)</label>
+    <select id="type-all">
+        <option value="Consolidated">Consolidated</option>
+        <option value="Standalone">Standalone</option>
+    </select>
+
+
+        </div>
+    <div class="row  hidden-default">
+
+        {% for item in config %}
+
+            <div class="chart-content col-md-6 col-lg-6 top-buffer"
+                 data-indicators='{{ item.indicators }}' data-chart-type='{{ item.chartType }}'
+                 data-target='{{ item.target }}' data-title='{{ item.title }}'
+                 data-show-percentage='{{ item.showPercentage }}'
+                 data-bands="{{ item.bandValues if item.showBands}}"
+                 data-inverted-bands="{{ item.showInvertedBands }}"
+                 data-period="{{ item.period }}"
+            >
+                <select class='hidden-default select-data-type'>
+                    <option value="Consolidated">Consolidated</option>
+                    <option value="Standalone">Standalone</option>
+                </select>
+
+                <button type="button" class="btn btn-primary btn-sm hidden-default modal-control" data-toggle="modal"
+                        data-target="#myModal">Pop Out
+                </button>
+
+                {% if item.showCompareOption %}
+                    <label>
+                        <input type="checkbox" class="compare-peers" value="" {{ item.compareByDefault }}>Compare
+                    </label>
+                {% endif %}
+                <div id="{{ item.target }}">
+
+                </div>
+
+            </div>
+        {% endfor %}
+
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <button id="height-increase">+</button>
+                        <button id="height-decrease">-</button>
+
+                        <div class="row">
+                            <div id="modal-chart"
+                                 class="col-lg-11 col-md-11 col-sm-11 col-xs-11"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block appLibraries %}
+        <script src="{{ url_for('static',filename='scripts/vendor/notify.min.js') }}"></script>
+        <script src="{{ url_for('static',filename='scripts/vendor/highcharts/highcharts.js') }}"></script>
+
+<script src="{{ url_for('static',filename='scripts/fundas.js') }}"></script>
+{% endblock %}

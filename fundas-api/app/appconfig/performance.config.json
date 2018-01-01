@@ -1,0 +1,112 @@
+[{
+        "indicators": "SR,NP,OP",
+        "chartType": "area",
+        "showCompareOption": false,
+        "title": "Annual Performance",
+        "target": "chart-annual-performance",
+        "showPercentage": "false"
+    },
+    {
+        "indicators": "SR,NP,OP",
+        "chartType": "area",
+        "showCompareOption": false,
+        "title": "Quarterly Performance",
+        "target": "chart-quarterly-performance",
+        "showPercentage": "false",
+        "period": "Q"
+    },
+    {
+        "indicators": "OPMPCT,NETPCT,EBIDTPCT",
+        "chartType": "spline",
+        "showCompareOption": false,
+        "title": "Annual Margins",
+        "target": "chart-annual-margins",
+        "showPercentage": "true"
+    },
+    {
+        "indicators": "OPMPCT,NETPCT,EBIDTPCT",
+        "chartType": "spline",
+        "showCompareOption": false,
+        "title": "Quarterly Margins",
+        "target": "chart-quarterly-margins",
+        "showPercentage": "true",
+        "period": "Q"
+    },
+    {
+        "indicators": "NETPCT",
+        "chartType": "spline",
+        "showCompareOption": true,
+        "showBands": true,
+        "title": "Net Margin Comparison",
+        "bandValues": "4,10",
+        "target": "chart-annual-margins-compare",
+        "showPercentage": "true"
+    },
+    {
+        "indicators": "NP,CFO",
+        "chartType": "spline",
+        "showCompareOption": false,
+        "title": "Net Income and Cash from Operations",
+        "target": "chart-annual-ni-cfo",
+        "showPercentage": "false"
+    },
+    {
+        "indicators": "ROE,ROCE",
+        "chartType": "spline",
+        "showCompareOption": false,
+        "showBands": true,
+        "title": "ROE - ROCE",
+        "bandValues": "5,15",
+        "target": "chart-annual-roe-roce",
+        "showPercentage": "true"
+    },
+    {
+        "indicators": "ROCE",
+        "chartType": "spline",
+        "showCompareOption": true,
+        "showBands": true,
+        "title": "ROCE Comparison",
+        "bandValues": "5,15",
+        "target": "chart-annual-roce-comparison",
+        "showPercentage": "true",
+        "compareByDefault": ""
+    },
+    {
+        "indicators": "ROE",
+        "chartType": "spline",
+        "showCompareOption": true,
+        "showBands": true,
+        "title": "ROE Comparison",
+        "bandValues": "5,15",
+        "target": "chart-annual-roe-comparison",
+        "showPercentage": "true",
+        "compareByDefault": ""
+    },
+    {
+        "title": "EPS",
+        "target": "chart-annual-eps",
+        "chartType": "spline",
+        "indicators": "EPS",
+        "showCompareOption": true
+    },
+    {
+        "title": "ROA",
+        "bandValues": "5,15",
+        "showCompareOption": true,
+        "indicators": "ROA",
+        "showPercentage": "true",
+        "compareByDefault": "",
+        "target": "chart-annual-roa-comparison",
+        "chartType": "spline",
+        "showBands": true
+    },
+    {
+        "title": "CROCI",
+        "showCompareOption": true,
+        "indicators": "CROCI",
+        "showPercentage": "true",
+        "compareByDefault": "",
+        "target": "chart-annual-croci-comparison",
+        "chartType": "spline"
+    }
+]

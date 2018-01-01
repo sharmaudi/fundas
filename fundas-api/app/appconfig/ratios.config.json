@@ -1,0 +1,58 @@
+[
+        {
+            "title":"Profitability and Management Efficiency",
+            "id": "pf-table",
+            "indicators": [
+                {"id":"period",
+                 "label":"Year"
+                 },
+                {"id":"ROE",
+                 "label":"ROE"
+                 },
+                {"id":"ROA",
+                 "label":"ROA"
+                 },
+                {"id":"ROIC",
+                 "label":"ROIC"
+                 },
+                {"id":"OPMPCT",
+                 "label":"OPM"
+                 },
+                {"id":"NETPCT",
+                 "label":"Net Margin"
+                 },
+                {"id":"CRATIO",
+                 "label":"Current Ratio"
+                 },
+                {"id":"ASETTO",
+                 "label":"Asset Turnover"
+                 },
+                {"id":"WCTO",
+                 "label":"Working Capital Turnover"
+                 },
+                {"id":"CFROA",
+                 "label":"Cash Flow Return on Assets"
+                 }
+
+            ],
+            "request_indicators":"ROE,ROA,ROIC,OPMPCT,NETPCT,CRATIO,ASETTO,WCTO,CFROA"
+        },
+{
+            "title":"Valuation",
+            "id": "pf-table",
+            "indicators": [
+                {"id":"period",
+                 "label":"Year"
+                 },
+                {"id":"PE",
+                 "label":"PE"
+                 },
+              {"id":"PB",
+                 "label":"PB"
+                 }
+
+
+            ],
+            "request_indicators":"PE,PB"
+        }
+]

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Fundas</title>
+
+    <!-- Bootstrap CSS -->
+<link rel="stylesheet"
+          href="{{ url_for('static',filename='styles/vendor/bootstrap.min.css') }}/">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/styles-index.css') }}">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn t work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+</head>
+
+<body class="body-bg">
+
+
+    <div class="main-div">
+        <span class="text-middle">
+            
+            
+
+            <div class="container">
+               <div class="col-lg-8 col-lg-offset-2">
+                <h1 style="color: #269abc">Welcome!</h1>
+                <p style="color: #269abc">Get started by entering a company name..</p>
+                    <div id="company-div">
+        <input type="text" class="typeahead" placeholder="Search for..." id="company">
+                    </div>
+
+               <div class="col-lg-8 col-lg-offset-2">
+                <h4 style="color: #269abc">or checkout this weeks <a href="/watchlist">Featured Companies</a> </h4>
+
+            </div>
+    <!-- /input-group -->
+    </div>
+
+
+
+
+
+
+    </span>
+    </div>
+
+
+
+
+
+
+
+
+
+
+   <script src="{{ url_for('static',filename='scripts/vendor/jquery-1.12.4.min.js') }}"></script>
+
+    <script src="{{ url_for('static',filename='scripts/vendor/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/typeahead.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/autocomplete-index.js') }}"></script>
+</body>
+
+</html>

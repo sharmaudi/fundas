@@ -1,0 +1,39 @@
+{
+  "EndpointSpec": {
+    "Ports": [
+      {
+        "Protocol": "tcp",
+        "PublishedPort": 8080,
+        "TargetPort": 80
+      }
+    ]
+  },
+  "Labels": {
+    "foo": "bar"
+  },
+  "Mode": {
+    "Replicated": {
+      "Replicas": 4
+    }
+  },
+  "Name": "web",
+  "RollbackConfig": {
+    "Delay": 1000000000,
+    "FailureAction": "pause",
+    "MaxFailureRatio": 0.15,
+    "Monitor": 15000000000,
+    "Parallelism": 1
+  },
+  "TaskTemplate": {
+    "ContainerSpec": {
+      "Secrets": [
+        {
+          "SecretID": "fpjqlhnwb19zds35k8wn80lq9",
+          "SecretName": "example_org_domain_key"
+        }
+      ]
+    }
+
+
+  }
+}

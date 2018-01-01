@@ -1,0 +1,52 @@
+[
+    {
+        "showCompareOption": true,
+        "target": "chart-annual-cratio",
+        "chartType": "spline",
+        "showBands": true,
+        "indicators": "CRATIO",
+        "title": "Current Ratio",
+        "showInvertedBands": "false",
+        "bandValues": ".5,1"
+    },
+    {
+        "showCompareOption": true,
+        "target": "chart-annual-solratio",
+        "chartType": "spline",
+        "showBands": true,
+        "indicators": "SOLRATIO",
+        "title": "Solvency Ratio",
+        "showInvertedBands": "false",
+        "bandValues": ".2,.5"
+    },
+    {
+        "showCompareOption": true,
+        "target": "chart-annual-de",
+        "chartType": "spline",
+        "showBands": true,
+        "indicators": "LTDE",
+        "title": "Debt to Equity Ratio",
+        "showInvertedBands": "true",
+        "bandValues": "2,1"
+    },
+    {
+        "showCompareOption": true,
+        "target": "chart-annual-ic",
+        "chartType": "spline",
+        "showBands": true,
+        "indicators": "IC",
+        "title": "Interest Coverage",
+        "showInvertedBands": "false",
+        "bandValues": "5,10"
+    },
+    {
+        "showCompareOption": true,
+        "target": "chart-annual-debtassets",
+        "chartType": "spline",
+        "showBands": true,
+        "indicators": "DEBT_ASSETS",
+        "title": "Debt to Assets Ratio",
+        "showInvertedBands": "true",
+        "bandValues": "1,.7"
+    }
+]

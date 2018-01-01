@@ -1,0 +1,111 @@
+[
+        {
+            "title":"Balance Sheet",
+            "id": "bs-table",
+            "indicators": [
+                {"id":"period",
+                 "label":"Year"
+                 },
+                {"id":"EQCAP",
+                 "label":"Shareholders Equity"
+                 },
+                {"id":"RSRV",
+                 "label":"Reserves"
+                 },
+                {"id":"DEBT",
+                 "label":"Total Debt"
+                 },
+                {"id":"CL",
+                 "label":"Current Liabilities"
+                 },
+                {"id":"TL",
+                 "label":"Total Liabilities"
+                 },
+                {"id":"NBLOCK",
+                 "label":"Net Block"
+                 },
+                {"id":"CWIP",
+                 "label":"Capital WIP"
+                 },
+                {"id":"CASH",
+                 "label":"Cash"
+                 },
+                {"id":"CA",
+                 "label":"Current Assets"
+                 },
+                {"id":"TA",
+                 "label":"Total Assets"
+                 }
+            ],
+            "request_indicators":"BVSH,CWIP,NBLOCK,RSRV,EQCAP,WC,SHAREFUND,DEBT,CL,TL,CASH,TA,CE,BVSH1,BVSH3,BVSH5,CA"
+        },
+        {
+            "title":"Cash Flows",
+            "id": "cf-table",
+            "indicators": [
+                {"id":"period",
+                 "label":"Year"
+                 },
+                {"id":"CFA",
+                 "label":"Cash from Financial Activity"
+                 },
+                {"id":"CFI",
+                 "label":"Cash from Investing Activity"
+                 },
+                {"id":"CFO",
+                 "label":"Cash from Operating Activity"
+                 },
+                {"id":"NCF",
+                 "label":"Net Cash Flow"
+                 }
+            ],
+            "request_indicators":"CFA,CFI,CFO,NCF"
+        },
+        {
+            "title":"Income Statement",
+            "id": "is-table",
+            "indicators": [
+                {"id":"period",
+                 "label":"Year"
+                 },
+                {"id":"SR",
+                 "label":"Shareholders Equity"
+                 },
+                {"id":"OEXPNS",
+                 "label":"Expenses"
+                 },
+                {"id":"OP",
+                 "label":"OP"
+                 },
+                {"id":"OPMPCT",
+                 "label":"OPM"
+                 },
+                {"id":"OI",
+                 "label":"Other Income"
+                 },
+                {"id":"INT",
+                 "label":"Interest"
+                 },
+                {"id":"DEP",
+                 "label":"Depreciation"
+                 },
+                {"id":"PBT",
+                 "label":"PBT"
+                 },
+                {"id":"TAX",
+                 "label":"Tax"
+                 },
+                {"id":"NP",
+                 "label":"Net Profit"
+                 },
+                {"id":"EPS",
+                 "label":"EPS"
+                 },
+                {"id":"DIV",
+                 "label":"Dividends"
+                 }
+            ],
+            "request_indicators":"SR,OEXPNS,OP,OPMPCT,OI,INT,DEP,PBT,TAX,EPS,DIV"
+        }
+
+    ]

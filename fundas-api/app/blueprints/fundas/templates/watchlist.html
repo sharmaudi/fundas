@@ -1,0 +1,41 @@
+{% extends 'layouts/app.html' %}
+
+<!DOCTYPE html>
+<html lang="">
+
+{% block title %}Fundas - Charts{% endblock %}
+
+{% block body %}
+
+    <div class="container top-buffer">
+
+    <div class="form-group top-buffer">
+    <label for="type">Data Type(All)</label>
+    <select id="type-all">
+        <option value="Consolidated">Consolidated</option>
+        <option value="Standalone">Standalone</option>
+    </select>
+    </div>
+
+            {% for item in watchlist['consolidated_list'] %}
+                <div class="chart-content col-md-4 col-lg-4 top-buffer">
+
+                    <div id="radar_{{ loop.index }}">
+                    </div>
+                </div>
+
+            {% endfor %}
+
+
+    </div>
+{% endblock %}
+
+
+{% block appLibraries %}
+    <script src="{{ url_for('static',filename='scripts/vendor/highcharts/highcharts.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/vendor/highcharts/highcharts-more.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/vendor/highcharts/modules/solid-gauge.js') }}"></script>
+
+    <script src="{{ url_for('static',filename='scripts/vendor/notify.min.js') }}"></script>>
+    <script src="{{ url_for('static',filename='scripts/watchlist.js') }}"></script>
+{% endblock %}

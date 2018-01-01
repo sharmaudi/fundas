@@ -1,0 +1,43 @@
+[
+        {
+            "title":"Quarterly Income Statement",
+            "id": "is-table",
+            "indicators": [
+                {"id":"period",
+                 "label":"Year"
+                 },
+                {"id":"SR",
+                 "label":"Shareholders Equity"
+                 },
+                {"id":"OEXPNS",
+                 "label":"Expenses"
+                 },
+                {"id":"OP",
+                 "label":"OP"
+                 },
+                {"id":"OPMPCT",
+                 "label":"OPM"
+                 },
+                {"id":"OI",
+                 "label":"Other Income"
+                 },
+                {"id":"INT",
+                 "label":"Interest"
+                 },
+                {"id":"DEP",
+                 "label":"Depreciation"
+                 },
+                {"id":"EPS",
+                 "label":"EPS"
+                 },
+                {"id":"DIV",
+                 "label":"Dividends"
+                 },
+                {"id":"NP",
+                 "label":"Net Profit"
+                 }
+            ],
+            "request_indicators":"SR,OEXPNS,OP,OPMPCT,OI,INT,DEP,PBT,TAX,EPS,DIV,NP",
+            "is_quarterly":"true"
+
+        }]

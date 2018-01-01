@@ -1,0 +1,60 @@
+{% extends 'layouts/app.html' %}
+
+<!DOCTYPE html>
+<html lang="">
+
+{% block title %}Fundas - Charts{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+
+    <div class="form-group top-buffer">
+    <label for="type">Data Type(All)</label>
+    <select id="type-all">
+        <option value="Consolidated">Consolidated</option>
+        <option value="Standalone">Standalone</option>
+    </select>
+
+
+        <button class="btn btn-default pull-right" id="export">Export</button>
+
+    </div>
+
+
+                {% for item in config %}
+                            <div class="table-responsive top-buffer">
+                            <p class="h4">{{ item.title }}</p>
+                    <table id="bs-table" class="table" data-height="450" data-indicators="{{ item.request_indicators }}" data-is-quarterly="{{ item.is_quarterly }}">
+                    <thead>
+
+                    <tr>
+                        {% for indicator in item.indicators %}
+                        <th data-field="{{ indicator.id }}">{{ indicator.label }}</th>
+                            {% endfor %}
+
+
+
+                    </tr>
+                    </thead>
+</table>
+</div>
+
+
+                {% endfor %}
+
+
+
+    </div>
+{% endblock %}
+
+
+{% block appLibraries %}
+    <script src="{{ url_for('static',filename='scripts/dateformat.js') }}"></script>
+
+    <script src="{{ url_for('static',filename='scripts/balanceSheet.js') }}"></script>
+    <script src="{{ url_for('static',filename='scripts/balanceSheet.js') }}"></script>
+
+
+{% endblock %}
