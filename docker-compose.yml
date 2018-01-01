@@ -33,21 +33,10 @@ services:
     env_file:
       - '.env'
     volumes:
-      - ./fundas-ui:/app
-      - /app/node_modules
-      - node_modules:/node_modules
+      - './fundas-ui:/app'
+      - 'node_modules:/app/node_modules'
     ports:
       - '3000:3000'
-
-
-
-#  celery:
-#    build: .
-#    command: celery worker -B -l info -A app.blueprints.contact.tasks
-#    env_file:
-#      - '.env'
-#    volumes:
-#      - '.:/fundas-app'
 
 volumes:
   postgres:
