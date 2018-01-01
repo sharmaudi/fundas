@@ -18,7 +18,7 @@ import simplejson as json
 @api.route('/api/v1/companies/', methods=['GET'])
 @cross_origin()
 def get_all_symbols():
-    data = {'companies': DataAccess.get_all_symbols()}
+    data = {'companies': [rec.symbol for rec in CompanyInfo.query.all()]}
     return jsonify(data)
 
 

@@ -5,7 +5,7 @@ DEBUG = True
 LOG_LEVEL = 'DEBUG'  # CRITICAL / ERROR / WARNING / INFO / DEBUG
 
 # Server name is required by Pytest .
-SERVER_NAME = '192.168.2.109:8000'
+SERVER_NAME = '192.168.2.100:8000'
 
 # Flask secret required for session related features.
 # Should be overriden using instance properties

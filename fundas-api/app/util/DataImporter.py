@@ -3,6 +3,7 @@ import concurrent.futures
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.types import Date
+from app.util import DBUtil
 
 import time
 
@@ -41,7 +42,7 @@ def init_db_with_chunks(file_name,
                            db_host='localhost',
                            db_port=5432,
                            db_pass='devpassword',
-                           num_processors=4,
+                           num_processors=2,
                             chunk_size=None):
     print("Not Implemented yet..")
 
@@ -51,12 +52,12 @@ def init_db_without_chunks(file_name,
                            db_host='localhost',
                            db_port=5432,
                            db_pass='devpassword',
-                           num_processors=4):
+                           num_processors=2):
     print(f"Reading CSV file {file_name}..")
     df = read_deb_csv(file_name)
 
     if not engine:
-        engine = create_engine(f"postgresql://fundas:{db_pass}@{db_host}:{db_port}/fundas")
+        engine = DBUtil.get_engine()
 
     print(f"Massaging fields..")
     df['symbol'] = df['lookup'].apply(lambda x: x.split('_', 2)[0])
@@ -82,7 +83,7 @@ def init_db_without_chunks(file_name,
     all_std_q.name = n3
     all_con_q.name = n4
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=num_processors) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_processors) as executor:
         std_annual_fut = executor.submit(process_db_frame,
                                          all_std_annual,
                                          n1,
@@ -157,6 +158,7 @@ def init_db(file_name='../data/DEB_test.csv', chunks=None):
         init_db_without_chunks(file_name)
     else:
         init_db_with_chunks(file_name, chunk_size=chunks)
+
 
 
 if __name__ == "__main__":

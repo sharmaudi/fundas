@@ -56,25 +56,25 @@ def deploy():
 @task
 def import_data():
     title("Adding initializing DB with data..")
-    local("docker-compose exec website python cli.py import_data")
+    local("docker-compose exec api python cli.py import_data")
     title("Done.")
 
 @task
 def init_redis():
     title("Initializing redis..")
-    local("docker-compose exec website python cli.py init_redis")
+    local("docker-compose exec api python cli.py init_redis")
     title("Done.")
 
 @task
 def analyse_watchlist():
     title("Adding initializing DB with data..")
-    local("docker-compose exec website python cli.py watchlist")
+    local("docker-compose exec api python cli.py watchlist")
     title("Done.")
 
 @task
 def analyse_portfolio():
     title("Adding initializing DB with data..")
-    local("docker-compose exec website python cli.py portfolio")
+    local("docker-compose exec api python cli.py portfolio")
     title("Done.")
 
 @task

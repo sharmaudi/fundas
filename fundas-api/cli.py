@@ -341,6 +341,7 @@ def test():
 def import_deb():
     DataImporter.init_db(resolve_data('DEB.csv'))
 
+
 cli.add_command(init)
 cli.add_command(get_companies)
 cli.add_command(load_the_lot)
