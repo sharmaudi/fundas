@@ -3,25 +3,25 @@ version: '2'
 services:
   postgres:
     image: 'postgres:9.5'
-    env_file:
-      - '.env'
+    environment:
+      env_file: .env
     volumes:
       - 'postgres:/var/lib/postgresql/data'
     ports:
       - '5432:5432'
 
-  redis:
-    image: 'redis:3.0-alpine'
-    command: redis-server
-    volumes:
-      - 'redis:/var/lib/redis/data'
-    ports:
-      - '6379:6379'
+#  redis:
+#    image: 'redis:3.0-alpine'
+#    command: redis-server
+#    volumes:
+#      - 'redis:/var/lib/redis/data'
+#    ports:
+#      - '6379:6379'
 
   api:
     build: ./fundas-api
-    env_file:
-      - '.env'
+    environment:
+      env_file: .env
     volumes:
       - './fundas-api:/fundas-api'
       - '/Users/Udit/Dropbox/Watchlist:/dropbox'
@@ -30,8 +30,9 @@ services:
 
   ui:
     build: ./fundas-ui
-    env_file:
-      - '.env'
+    environment:
+      env_file: .env
+      NODE_ENV: development
     volumes:
       - './fundas-ui:/app'
       - 'node_modules:/app/node_modules'

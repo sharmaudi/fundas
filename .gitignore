@@ -154,3 +154,4 @@ typings/
 
 /fundas-api/data/DEB.csv
 /fundas-api/data/DEB_test.csv
+!/fundas-ui/.env

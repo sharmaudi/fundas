@@ -7,7 +7,11 @@ const superagent = superagentPromise(_superagent, global.Promise);
 const responseBody = res => res.body;
 
 
-const API_ROOT = 'http://192.168.2.100:8000/api/v1';
+const API_ROOT = `http://${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/api/v1`;
+
+console.log(`API Root is : ${API_ROOT}`);
+
+console.log("Environment: ", process.env);
 
 const requests = {
     del: url =>

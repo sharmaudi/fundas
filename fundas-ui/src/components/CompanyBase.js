@@ -79,21 +79,25 @@ class CompanyBase extends Component {
                     }
                     actions={(
                         <CardActions>
-                            <FlatButton label="Info" containerElement={<Link
-                                to={`/companies/${selectedCompany}/analysis/${dataType}`}/>}/>
-                            <FlatButton label="Analysis" containerElement={<Link
-                                to={`/companies/${selectedCompany}/analysis/${dataType}`}/>}/>
-                            <FlatButton label="Performance" containerElement={<Link
-                                to={`/companies/${selectedCompany}/performance/${dataType}`}/>}/>
-                            <FlatButton label="Health" containerElement={<Link
-                                to={`/companies/${selectedCompany}/health/${dataType}`}/>}/>
-                            <FlatButton label="Valuation" containerElement={<Link
-                                to={`/companies/${selectedCompany}/valuation/${dataType}`}/>}/>
-                            <FlatButton label="Dividends" containerElement={<Link
-                                to={`/companies/${selectedCompany}/dividends/${dataType}`}/>}/>
-                            <FlatButton label="Momentum" containerElement={<Link
-                                to={`/companies/${selectedCompany}/momentum/${dataType}`}/>}/>
 
+                            <div className="row">
+                                <div className="col-lg-12 col-sm-6 col-xs-6">
+                                    <FlatButton label="Info" containerElement={<Link
+                                        to={`/companies/${selectedCompany}/analysis/${dataType}`}/>}/>
+                                    <FlatButton label="Analysis" containerElement={<Link
+                                        to={`/companies/${selectedCompany}/analysis/${dataType}`}/>}/>
+                                    <FlatButton label="Performance" containerElement={<Link
+                                        to={`/companies/${selectedCompany}/performance/${dataType}`}/>}/>
+                                    <FlatButton label="Health" containerElement={<Link
+                                        to={`/companies/${selectedCompany}/health/${dataType}`}/>}/>
+                                    <FlatButton label="Valuation" containerElement={<Link
+                                        to={`/companies/${selectedCompany}/valuation/${dataType}`}/>}/>
+                                    <FlatButton label="Dividends" containerElement={<Link
+                                        to={`/companies/${selectedCompany}/dividends/${dataType}`}/>}/>
+                                    <FlatButton label="Momentum" containerElement={<Link
+                                        to={`/companies/${selectedCompany}/momentum/${dataType}`}/>}/>
+                                </div>
+                            </div>
                         </CardActions>
                     )}
 

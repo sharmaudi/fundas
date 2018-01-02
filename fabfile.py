@@ -50,13 +50,20 @@ def build():
 def deploy():
     title("Deploying application..")
     local("docker-compose up -d")
+    local("docker-compose logs -f")
     title("Done.")
 
 
 @task
+def init_db():
+    title("Adding initializing DB with data..")
+    local("docker-compose exec api python cli.py init")
+    title("Done.")
+
+@task
 def import_data():
     title("Adding initializing DB with data..")
-    local("docker-compose exec api python cli.py import_data")
+    local("docker-compose exec api python cli.py import_deb")
     title("Done.")
 
 @task

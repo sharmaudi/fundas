@@ -31,7 +31,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            navDrawerOpen: true
+            navDrawerOpen: false
         }
     }
 
@@ -99,11 +99,13 @@ class App extends Component {
 
         const styles = {
             header: {
-                paddingLeft: navDrawerOpen ? paddingLeftDrawerOpen : 0
+                paddingLeft: navDrawerOpen ? paddingLeftDrawerOpen : 0,
+                marginLeft:0
             },
             container: {
-                marginTop: '50px',
-                paddingLeft: navDrawerOpen && this.props.width !== SMALL ? paddingLeftDrawerOpen : 0
+                overflowX:'hidden',
+                marginTop: '70px',
+                paddingLeft: navDrawerOpen && this.props.width !== SMALL ? paddingLeftDrawerOpen : 5
             }
         };
 
@@ -112,7 +114,6 @@ class App extends Component {
             return (
                 <MuiThemeProvider muiTheme={ThemeDefault}>
 
-                    <div>
                         <Header styles={styles.header}
                                 handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)}
                                 data={companies}
@@ -147,7 +148,6 @@ class App extends Component {
                             onRequestClose={this.handleRequestClose}
                         />
 
-                    </div>
 
 
 

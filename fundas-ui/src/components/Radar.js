@@ -2,17 +2,15 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ReactHighcharts from 'react-highcharts'
 import {blue500, white} from "material-ui/styles/colors";
-import GlobalStyles from '../styles';
 import {ResponsiveContainer} from "recharts";
-import {Paper} from "material-ui";
+import {Card, CardHeader, Paper} from "material-ui";
 import {Link} from "react-router-dom";
 
 
 const styles = {
 
     trial: {
-        margin: 20,
-        textAlign: 'center',
+        margin: 10,
         height: 500
     },
     paper: {
@@ -109,23 +107,21 @@ class Radar extends Component {
 
     render() {
         return (
-            <div style={GlobalStyles.section}>
-            <Paper
+            <Card
                 style={styles.trial}
             >
-                {this.props.showHeader && (
-                    <div style={{...GlobalStyles.title, ...styles.header}}>
-                        {this.getHeader()}
-                    </div>
-                )}
+                <CardHeader
+                    title={this.getHeader()}
+                >
+
+                </CardHeader>
 
                 <div style={styles.div}>
                     <ResponsiveContainer>
                         <ReactHighcharts config={this.getConfig()}/>
                     </ResponsiveContainer>
                 </div>
-            </Paper>
-            </div>
+            </Card>
 
         );
     }
