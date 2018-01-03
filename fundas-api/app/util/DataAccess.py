@@ -182,7 +182,12 @@ def get_all_symbols():
 def get_momentum(company, start_date):
     info = CompanyInfo.query.get(company)
     is_bse=False
-    if info.nse_code:
+    print(f"Searching for company {company}")
+    print(f"Company is {info}")
+
+    if not info:
+        key = f"NSE/{company}"
+    elif info.nse_code:
         key = f'NSE/{info.nse_code}'
     else:
         is_bse = True
@@ -193,19 +198,17 @@ def get_momentum(company, start_date):
         df = quandl.get(key,
                         authtoken=q_api_key,
                         returns='pandas',
-                        collapse='weekly',
                         start_date=start_date,
                         end_date=datetime.datetime.now().strftime('%Y-%m-%d'))
-    except quandl.NotFoundError as err:
+    except Exception as err:
         print(f"Key {key} not found in Quandl.")
         if key.split('/')[0] == 'NSE':
             print("Trying BSE")
-            key = f'BSE/BOM{info.bse_code}'
+            bse_key = f'BSE/BOM{info.bse_code}'
             is_bse = True
-            df = quandl.get(key,
+            df = quandl.get(bse_key,
                             authtoken=q_api_key,
                             returns='pandas',
-                            collapse='weekly',
                             start_date=start_date,
                             end_date=datetime.datetime.now().strftime('%Y-%m-%d'))
 

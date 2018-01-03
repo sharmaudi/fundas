@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import LeftDrawer from './LeftDrawer'
 import withWidth, {LARGE, SMALL} from 'material-ui/utils/withWidth';
-import ThemeDefault from '../theme-default';
 import Header from './Header'
 import Config from "../Config";
 import config from "../Config";
@@ -14,7 +13,7 @@ import {APP_LOAD, REDIRECT} from '../constants/actionTypes';
 import {store} from '../store';
 import agent from '../agent';
 import {Route, Switch} from 'react-router-dom';
-
+import ThemeDark from '../theme-dark'
 
 import {push} from 'react-router-redux'
 import DashboardPage from "./DashboardPage";
@@ -23,6 +22,8 @@ import HighchartsMore from 'highcharts-more';
 import ReactHighcharts from 'react-highcharts'
 import FeaturedPage from "./FeaturedPage";
 import {Snackbar} from "material-ui";
+import PortfolioBase from "./portfolio/PortfolioBase";
+
 
 HighchartsMore(ReactHighcharts.Highcharts);
 
@@ -112,7 +113,7 @@ class App extends Component {
 
         if (this.props.appLoaded) {
             return (
-                <MuiThemeProvider muiTheme={ThemeDefault}>
+                <MuiThemeProvider muiTheme={ThemeDark}>
 
                         <Header styles={styles.header}
                                 handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(this)}
@@ -124,7 +125,7 @@ class App extends Component {
                         <LeftDrawer navDrawerOpen={navDrawerOpen}
                                     menus={Config.menus}
                                     company={this.props.company}
-                                    username="User Admin"/>
+                                    username="bambebo"/>
 
                         {/*<div style={styles.container}>*/}
                             {/*{this.props.children}*/}
@@ -133,6 +134,10 @@ class App extends Component {
                         <div style={styles.container}>
                             <Switch>
                                 <Route path="/Dashboard" component={DashboardPage}/>
+
+                                <Route path="/portfolio/:pageType" component={PortfolioBase}/>
+                                <Route path="/portfolio" component={PortfolioBase}/>
+
                                 <Route path="/featured/:dataType" component={FeaturedPage}/>
                                 <Route path="/companies/:id/:chartType/:dataType" component={CompanyBase}/>
                                 <Route path="/companies/:id/:chartType" component={CompanyBase}/>
@@ -157,7 +162,7 @@ class App extends Component {
 
             );
         } else {
-            return <MuiThemeProvider muiTheme={ThemeDefault}>
+            return <MuiThemeProvider muiTheme={ThemeDark}>
                 <div>
                     {this.props.error && (<p>Error while initializing application.</p>)}
                     {!this.props.error && (<p>Loading...</p>)}

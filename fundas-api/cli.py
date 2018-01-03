@@ -9,7 +9,7 @@ from app.blueprints.api.models import CompanyInfo, LatestStandalone, LatestConso
 from app.extensions import db
 from app.util import ScreenerUtil, DataImporter, DataAccess, DBUtil
 from app.util.PathResolver import resolve_data
-import json
+
 # Create an app context for the database connection.
 
 app = create_app()
@@ -174,7 +174,7 @@ def load_the_lot():
                  get_screener_dicts,
                  bulk_insert_screener,
                  company_list=symbol_list[:10]
-                )
+                 )
 
     # _bulk_upload([],
     #              get_momentum,
@@ -342,11 +342,28 @@ def import_deb():
     DataImporter.init_db(resolve_data('DEB.csv'))
 
 
+@click.command()
+def watchlist():
+    from app.util import analyse_watchlist
+    analyse_watchlist.execute(['/dropbox/watchlist_bse.tls',
+                               '/dropbox/watchlist.tls'])
+
+
+@click.command()
+def portfolio():
+    from app.util import analyse_portfolio
+    # df = DBUtil.get_technicals_as_df('ITC')
+    # print(df)
+    analyse_portfolio.execute('/dropbox/tradebook.xlsx')
+
+
 cli.add_command(init)
 cli.add_command(get_companies)
 cli.add_command(load_the_lot)
 cli.add_command(test)
 cli.add_command(import_deb)
+cli.add_command(watchlist)
+cli.add_command(portfolio)
 
 if __name__ == '__main__':
     cli()

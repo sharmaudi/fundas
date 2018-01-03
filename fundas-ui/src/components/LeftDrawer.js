@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom';
 import Avatar from 'material-ui/Avatar';
 import PropTypes from 'prop-types'
 import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right';
+import avatar from '../images/avatar.jpg'
 
 const LeftDrawer = (props) => {
     let { navDrawerOpen } = props;
@@ -53,10 +54,10 @@ const LeftDrawer = (props) => {
             docked={true}
             open={navDrawerOpen}>
             <div style={styles.logo}>
-                Material Admin
+                Fundas!
             </div>
             <div style={styles.avatar.div}>
-                <Avatar src="http://www.material-ui.com/images/uxceo-128.jpg"
+                <Avatar src={avatar}
                         size={50}
                         style={styles.avatar.icon}/>
                 <span style={styles.avatar.span}>{props.username}</span>

@@ -44,3 +44,4 @@ redis
 Flask-Cache
 Flask-Cors
 simplejson
+xlrd

@@ -2,7 +2,7 @@ import {
     COMPANY_LOAD,
     FUNDAS_PAGE_LOADED,
     FUNDAS_PAGE_UNLOADED,
-    CHANGE_DATA_TYPE, FEATURED_LOAD, MOMENTUM_LOAD
+    CHANGE_DATA_TYPE, FEATURED_LOAD, MOMENTUM_LOAD, PORTFOLIO_LOAD
 } from '../constants/actionTypes';
 
 const defaultState = {
@@ -47,7 +47,11 @@ export default (state = defaultState, action) => {
                 ...state,
                 featured:action.payload
             };
-
+        case PORTFOLIO_LOAD:
+            return {
+                ...state,
+                portfolio:action.payload
+            };
         case MOMENTUM_LOAD:
             return {
                 ...state,

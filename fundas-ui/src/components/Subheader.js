@@ -58,6 +58,8 @@ class Subheader extends Component {
 
                 {this.props.actions}
 
+                {this.props.children}
+
             </Card>
         )
     }

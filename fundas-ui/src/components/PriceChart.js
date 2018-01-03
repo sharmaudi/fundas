@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Paper from 'material-ui/Paper';
 import {blue50, white} from 'material-ui/styles/colors';
 
 
@@ -25,6 +24,7 @@ const styles = {
         padding: 10
     }
 };
+
 class PriceChart extends Component {
 
     getConfig() {
@@ -81,7 +81,7 @@ class PriceChart extends Component {
         let roc60 = momentum.technicals.map(obj => [obj['date'], obj['roc60']]);
         return {
             chart: {
-                height: styles.div.height/2
+                height: styles.div.height / 2
             },
             rangeSelector: {
                 selected: 4
@@ -112,7 +112,6 @@ class PriceChart extends Component {
     }
 
 
-
     render() {
 
         if (!this.props.momentumData) {
@@ -121,10 +120,10 @@ class PriceChart extends Component {
 
         return (
 
-                <Paper style={styles.paper}>
-                            <ReactHighstock config={this.getConfig()}/>
-                        <ReactHighstock config={this.getRocConfig()}/>
-                </Paper>
+            <div>
+                <ReactHighstock config={this.getConfig()}/>
+                <ReactHighstock config={this.getRocConfig()}/>
+            </div>
 
 
         );
@@ -132,8 +131,8 @@ class PriceChart extends Component {
 }
 
 PriceChart.propTypes = {
-    title:PropTypes.string,
-    companyName:PropTypes.string,
+    title: PropTypes.string,
+    companyName: PropTypes.string,
     momentumData: PropTypes.object,
 };
 PriceChart.defaultProps = {};

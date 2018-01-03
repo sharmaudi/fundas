@@ -5,7 +5,6 @@ import withWidth from "material-ui/utils/withWidth";
 import {MOMENTUM_LOAD} from "../constants/actionTypes";
 import agent from "../agent";
 import PriceChart from "./PriceChart";
-import {Paper} from "material-ui";
 
 class MomentumPage extends Component {
 
@@ -30,13 +29,13 @@ class MomentumPage extends Component {
 
         if (this.props.momentum) {
             return (
-                    <Paper>
+                    <div>
                         <PriceChart
                         title={this.props.company}
                         companyName={this.props.company}
                         momentumData={this.props.momentum}
                         />
-                    </Paper>
+                    </div>
             )
         } else {
             return "Loading..."

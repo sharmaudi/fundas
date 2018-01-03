@@ -1,6 +1,10 @@
+import concurrent.futures
+import csv
+
 from app.util import DataAccess
 import pandas as pd
 
+from app.util.PathResolver import resolve_data
 
 
 def perform_valuation_checks(df):
@@ -367,3 +371,86 @@ def analyse_company(company_name, company_dataframe=None, data_type='standalone'
 
     return result
 
+
+def analyse_list(company_list, report_file_name, map_symbols=True):
+    c_score_dict = {}
+    s_score_dict = {}
+    error_list = []
+
+    print(f"Analysing companies {company_list}")
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        # Start the load operations and mark each future with its URL
+
+        future_score = {}
+
+        for code in company_list:
+
+            if map_symbols:
+                is_bse = False
+                if code.isnumeric():
+                    is_bse = True
+                l = DataAccess.get_company_code(code, is_bse)
+                if l:
+                    comp = l[0]['symbol']
+                    future_score.update({executor.submit(analyse, comp): comp})
+            else:
+                future_score.update({executor.submit(analyse, code): code})
+
+        for future in concurrent.futures.as_completed(future_score):
+            company = future_score[future]
+            try:
+                scores_combined = future.result(timeout=10)
+                # print('-' * 100)
+                # print('Company - {}'.format(company))
+                # print(scores_combined)
+                # print('-' * 100)
+
+                for key in ['standalone', 'consolidated']:
+                    scores = scores_combined[key]
+                    flat_dict = {
+                        'valuation':scores['valuation']['score'],
+                        'valuation_checklist':scores['valuation']['checks'],
+                        'performance': scores['performance']['score'],
+                        'performance_checklist': scores['performance']['checks'],
+                        'health': scores['health']['score'],
+                        'health_checklist': scores['health']['checks'],
+                        'dividends': scores['dividends']['score'],
+                        'dividends_checklist': scores['dividends']['checks']
+                    }
+                    if key is 'standalone':
+                        s_score_dict.update({company: flat_dict})
+
+                    if key is 'consolidated':
+                        c_score_dict.update({company: flat_dict})
+            except Exception as exc:
+                print('%r generated an exception: %s' % (company, exc))
+                error_list.append(company)
+
+    df_c = pd.DataFrame(c_score_dict).transpose()
+    df_s = pd.DataFrame(s_score_dict).transpose()
+
+    df_c = assign_ranks(df_c).reset_index()
+    df_s = assign_ranks(df_s).reset_index()
+
+    df_s.rename(columns={'index': 'company'}).to_csv(resolve_data(f"{report_file_name}_standalone.csv"), index=False)
+    df_c.rename(columns={'index': 'company'}).to_csv(resolve_data(f"{report_file_name}_consolidated.csv"), index=False)
+
+    print('*' * 100)
+    print("Following companies have errors. Analyse Manually: {}".format(error_list))
+
+    with open(resolve_data(f"{report_file_name}_errors.csv"), "w") as output:
+        writer = csv.writer(output, lineterminator='\n')
+        for val in error_list:
+            writer.writerow([val])
+
+
+def assign_ranks(df):
+    df['dividends_rank'] = df.dividends.rank(ascending=True)
+    df['health_rank'] = df.health.rank(ascending=True)
+    df['performance_rank'] = df.performance.rank(ascending=True)
+    df['valuation_rank'] = df.valuation.rank(ascending=True)
+    df['Score'] = df['dividends_rank'] + df['health_rank'] + df['performance_rank'] + df[
+        'valuation_rank']
+    df = df.sort_values(by='Score', ascending=False)
+    return df

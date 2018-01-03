@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactHighcharts from 'react-highcharts'
 import {blue500, white} from "material-ui/styles/colors";
 import {ResponsiveContainer} from "recharts";
-import {Card, CardHeader, Paper} from "material-ui";
+import {Card, CardHeader} from "material-ui";
 import {Link} from "react-router-dom";
 
 

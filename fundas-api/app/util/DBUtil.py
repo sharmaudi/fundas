@@ -92,10 +92,11 @@ def get_engine():
 def get_technicals_as_df(symbol):
     tech = get_technicals(symbol)
     query = db.session.query(TechnicalsHistorical).join(Technicals).filter(Technicals.symbol==tech.symbol)
-    return pd.read_sql(query.statement, db.session.bind).fillna(0)
+    return pd.read_sql(query.statement, db.session.bind, index_col='date', parse_dates=['date']).fillna(0)
 
 
 def get_technicals(symbol):
+    # print(f"Getting technicals for {symbol}")
     tech = Technicals.query.get(symbol)
     current_datetime = datetime.datetime.utcnow()
     if not tech:
@@ -105,7 +106,7 @@ def get_technicals(symbol):
         d1_ts = time.mktime(current_datetime.timetuple())
         d2_ts = time.mktime(tech.updated_on.timetuple())
         time_elapsed = (d1_ts - d2_ts)/60
-        print(f"{symbol} was updated {time_elapsed} minutes ago.")
+        # print(f"{symbol} was updated {time_elapsed} minutes ago.")
         if time_elapsed > float(7 * 60 * 24):
             tech = update_technicals(symbol)
     return tech

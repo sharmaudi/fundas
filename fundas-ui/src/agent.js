@@ -28,7 +28,9 @@ const companies = {
     all: () => requests.get(`/companies/`),
     getCompany: (symbol) => requests.get(`/companies/${symbol}`),
     getFeatured: () => requests.get(`/featured/`),
-    getMomentum: (symbol) => requests.get(`/companies/${symbol}/momentum/`)
+    getMomentum: (symbol) => requests.get(`/companies/${symbol}/momentum/`),
+    getPortfolio: () => requests.get(`/portfolio/`),
+    getPortfolioPerformance: () => requests.get(`/portfolio/performance`)
 };
 
 export default {

@@ -101,7 +101,7 @@ def get_momentum(company):
     data_df = DBUtil.get_technicals_as_df(company)
     data = {
         'company': company,
-        'technicals': data_df.to_dict(orient='records')
+        'technicals': data_df.reset_index().to_dict(orient='records')
     }
     end_time = time.time()
     print('Processed Request at {}' + str(end_time))
@@ -111,8 +111,15 @@ def get_momentum(company):
 
 @api.route('/api/v1/portfolio', methods=['GET'])
 @api.route('/api/v1/portfolio/', methods=['GET'])
+@cross_origin()
 def get_portfolio():
-    return as_json(report.get_portfolio_report())
+
+    ret_dict = {
+        'companies': report.get_portfolio_report(),
+        'performance': report.get_portfolio_performance_report()
+    }
+
+    return jsonify(ret_dict)
 
 
 @api.route('/api/v1/featured', methods=['GET'])
@@ -126,7 +133,7 @@ def get_featured():
 @api.route('/api/v1/portfolio/performance/', methods=['GET'])
 @cross_origin()
 def get_portfolio_performance():
-    return as_json(report.get_portfolio_performance_report())
+    return jsonify(report.get_portfolio_performance_report())
 
 
 def as_json(data):

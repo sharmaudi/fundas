@@ -101,33 +101,39 @@ class CompanyBase extends Component {
                         </CardActions>
                     )}
 
-                />
+                >
 
-                <div style={globalStyles.section}>
-                    <Switch>
+                    <div style={globalStyles.section}>
+                        <Switch>
 
-                        <Route path="/companies/:id/performance/:dataType" component={PerformancePage}/>
-                        <Route path="/companies/:id/performance" component={PerformancePage}/>
+                            <Route path="/companies/:id/performance/:dataType" component={PerformancePage}/>
+                            <Route path="/companies/:id/performance" component={PerformancePage}/>
 
 
-                        <Route path="/companies/:id/health/:dataType" component={HealthPage}/>
-                        <Route path="/companies/:id/health" component={HealthPage}/>
+                            <Route path="/companies/:id/health/:dataType" component={HealthPage}/>
+                            <Route path="/companies/:id/health" component={HealthPage}/>
 
-                        <Route path="/companies/:id/valuation/:dataType" component={ValuationPage}/>
-                        <Route path="/companies/:id/valuation" component={ValuationPage}/>
+                            <Route path="/companies/:id/valuation/:dataType" component={ValuationPage}/>
+                            <Route path="/companies/:id/valuation" component={ValuationPage}/>
 
-                        <Route path="/companies/:id/dividends/:dataType" component={DividendsPage}/>
-                        <Route path="/companies/:id/dividends" component={DividendsPage}/>
+                            <Route path="/companies/:id/dividends/:dataType" component={DividendsPage}/>
+                            <Route path="/companies/:id/dividends" component={DividendsPage}/>
 
-                        <Route path="/companies/:id/analysis/:dataType" component={AnalysisPage}/>
-                        <Route path="/companies/:id/analysis" component={AnalysisPage}/>
+                            <Route path="/companies/:id/analysis/:dataType" component={AnalysisPage}/>
+                            <Route path="/companies/:id/analysis" component={AnalysisPage}/>
 
-                        <Route path="/companies/:id/momentum/:dataType" component={MomentumPage}/>
-                        <Route path="/companies/:id/momentum" component={MomentumPage}/>
+                            <Route path="/companies/:id/momentum/:dataType" component={MomentumPage}/>
+                            <Route path="/companies/:id/momentum" component={MomentumPage}/>
 
-                        <Route path="/companies/:id" component={PerformancePage}/>
-                    </Switch>
-                </div>
+                            <Route path="/companies/:id" component={PerformancePage}/>
+                        </Switch>
+                    </div>
+
+
+
+                </Subheader>
+
+
             </div>
 
         );
