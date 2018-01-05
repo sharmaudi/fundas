@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
-import agent from "../agent";
+import agent, {watchlist} from "../agent";
 import compose from "recompose/compose";
 import {connect} from "react-redux";
-import {CHANGE_DATA_TYPE, FEATURED_LOAD} from "../constants/actionTypes";
+import {
+    CHANGE_DATA_TYPE, FEATURED_LOAD, WATCHLIST_ADD, WATCHLIST_DELETE,
+    WATCHLIST_LOAD
+} from "../constants/actionTypes";
 import globalStyles from '../styles';
 import MenuItem from 'material-ui/MenuItem';
 import {DropDownMenu, Toolbar, ToolbarGroup} from "material-ui";
@@ -42,6 +45,7 @@ class FeaturedPage extends Component {
 
     componentWillMount() {
         this.props.loadFeatured(agent.companies.getFeatured());
+        this.props.loadWatchlist(watchlist.getWatchlist())
     }
 
 
@@ -140,6 +144,8 @@ class FeaturedPage extends Component {
                                 acceptableScores={[7,6,5,3]}
                                 showLink={true}
                                 linkDataType={dataType}
+                                showAddFavorite={true}
+                                watchlist={this.props.watchlist}
 
                             />
                             </div>
@@ -166,7 +172,8 @@ class FeaturedPage extends Component {
 
 const mapStateToProps = state => {
     return {
-        featured: state.fundas.featured
+        featured: state.fundas.featured,
+        watchlist: state.fundas.watchlist
     }
 };
 
@@ -182,6 +189,21 @@ const mapDispatchToProps = dispatch => ({
         payload: {
             dataType: newDataType
         }
+    }),
+    loadWatchlist: (payload) => dispatch({
+        type: WATCHLIST_LOAD,
+        payload,
+        skipTracking:false
+    }),
+    addToWatchlist: (payload) => dispatch({
+        type: WATCHLIST_ADD,
+        payload,
+        skipTracking:false
+    }),
+    deleteFromWatchlist: (payload) => dispatch({
+        type: WATCHLIST_DELETE,
+        payload,
+        skipTracking:false
     })
 });
 

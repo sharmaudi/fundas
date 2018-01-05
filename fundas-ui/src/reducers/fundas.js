@@ -2,7 +2,7 @@ import {
     COMPANY_LOAD,
     FUNDAS_PAGE_LOADED,
     FUNDAS_PAGE_UNLOADED,
-    CHANGE_DATA_TYPE, FEATURED_LOAD, MOMENTUM_LOAD, PORTFOLIO_LOAD
+    CHANGE_DATA_TYPE, FEATURED_LOAD, MOMENTUM_LOAD, PORTFOLIO_LOAD, WATCHLIST_ADD, WATCHLIST_DELETE, WATCHLIST_LOAD
 } from '../constants/actionTypes';
 
 const defaultState = {
@@ -57,6 +57,16 @@ export default (state = defaultState, action) => {
                 ...state,
                 momentum:action.payload
             };
+
+        case WATCHLIST_ADD:
+        case WATCHLIST_DELETE:
+        case WATCHLIST_LOAD:
+            return {
+                ...state,
+                watchlist:action.payload.watchlist,
+                watchlist_analysis:action.payload.analysis
+            };
+
 
         default:
             return state;

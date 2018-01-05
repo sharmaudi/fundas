@@ -140,3 +140,10 @@ class TechnicalsHistorical(db.Model, ResourceMixin):
     hhv_all_time = db.Column(db.Float)
     roc30 = db.Column(db.Float)
     roc60 = db.Column(db.Float)
+
+
+class Watchlist(db.Model, ResourceMixin):
+    __tablename__ = 'watchlist'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String)
+    symbol = db.Column(db.String)

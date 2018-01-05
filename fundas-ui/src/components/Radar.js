@@ -1,21 +1,34 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ReactHighcharts from 'react-highcharts'
-import {blue500, white} from "material-ui/styles/colors";
+import {blue500, blue300,white} from "material-ui/styles/colors";
 import {ResponsiveContainer} from "recharts";
-import {Card, CardHeader} from "material-ui";
+import {Card, CardHeader, CardTitle, Checkbox} from "material-ui";
 import {Link} from "react-router-dom";
+import {connect} from "react-redux";
+import withWidth from "material-ui/utils/withWidth";
+import compose from "recompose/compose";
+import {
+    CHANGE_DATA_TYPE, FEATURED_LOAD, WATCHLIST_ADD, WATCHLIST_DELETE,
+    WATCHLIST_LOAD
+} from "../constants/actionTypes";
+
+import {watchlist} from "../agent";
+import ActionFavorite from 'material-ui/svg-icons/action/favorite';
+import ActionFavoriteBorder from 'material-ui/svg-icons/action/favorite-border';
+import agent from "../agent";
+
 
 
 const styles = {
 
     trial: {
         margin: 10,
-        height: 500
+        height: 400
     },
     paper: {
         backgroundColor: white,
-        height: 400
+        height: 350
     },
     div: {
         marginLeft: 'auto',
@@ -23,27 +36,52 @@ const styles = {
         width: '95%',
         height: 350
     },
-    header: {
+    headerLiked: {
         color: white,
         backgroundColor: blue500,
-        padding: 10
+        padding: 20
+    },
+    header: {
+        color: white,
+        backgroundColor: blue300,
+        padding: 20
     },
     headerLink: {
         color: white,
-        backgroundColor: blue500,
         padding: 10,
         textDecoration: 'none'
+    },
+    checkbox: {
+        float:'right'
     }
 };
 
 class Radar extends Component {
 
+    handleCheck(event, isInputChecked) {
+        const {company} = this.props
 
+        if(isInputChecked) {
+            this.props.addToWatchlist(watchlist.addToWatchlist(company))
+        } else {
+            this.props.deleteFromWatchlist(watchlist.removeFromWatchlist(company))
+        }
+
+
+    }
+
+
+    componentWillMount() {
+        if(!this.props.watchlist) {
+            this.props.loadWatchlist(watchlist.getWatchlist())
+        }
+    }
 
     getConfig() {
             return {
 
                 chart: {
+                    height: styles.div.height - 50,
                     polar: true,
                     type: 'line'
                 },
@@ -106,20 +144,47 @@ class Radar extends Component {
     }
 
     render() {
+
+        const {watchlist} = this.props;
+
+        let checked = false;
+
+        if(watchlist && watchlist.indexOf(this.props.company) > -1) {
+            checked = true
+        }
+
         return (
             <Card
                 style={styles.trial}
             >
-                <CardHeader
-                    title={this.getHeader()}
-                >
+
+
+                    <CardHeader
+                        style={checked?styles.headerLiked:styles.header}
+                        title={this.getHeader()}
+                    >
+
 
                 </CardHeader>
 
+                <CardTitle>
+                    <Checkbox
+                        checked={checked}
+                        checkedIcon={<ActionFavorite />}
+                        uncheckedIcon={<ActionFavoriteBorder />}
+                        style={styles.checkbox}
+                        onCheck={this.handleCheck.bind(this)}
+                    />
+                </CardTitle>
+
+
+
                 <div style={styles.div}>
                     <ResponsiveContainer>
-                        <ReactHighcharts config={this.getConfig()}/>
+                        <ReactHighcharts
+                            config={this.getConfig()}/>
                     </ResponsiveContainer>
+
                 </div>
             </Card>
 
@@ -137,4 +202,30 @@ Radar.propTypes = {
 };
 Radar.defaultProps = {};
 
-export default Radar;
+const mapStateToProps = state => {
+    return {
+        featured: state.fundas.featured,
+        watchlist: state.fundas.watchlist
+    }
+};
+
+
+const mapDispatchToProps = dispatch => ({
+    addToWatchlist: (payload) => dispatch({
+        type: WATCHLIST_ADD,
+        payload,
+        skipTracking:false
+    }),
+    deleteFromWatchlist: (payload) => dispatch({
+        type: WATCHLIST_DELETE,
+        payload,
+        skipTracking:false
+    }),
+    loadWatchlist: (payload) => dispatch({
+        type: WATCHLIST_LOAD,
+        payload,
+        skipTracking:false
+    }),
+});
+
+export default compose(withWidth(), connect(mapStateToProps, mapDispatchToProps))(Radar);
