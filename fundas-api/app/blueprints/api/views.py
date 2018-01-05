@@ -3,9 +3,9 @@ import time
 
 from flask_cors import cross_origin
 
-from app.blueprints.api.models import CompanyInfo
-from app.extensions import csrf
-from app.util import DataAccess, report, ConfigLoader, DBUtil
+from app.blueprints.api.models import CompanyInfo, Watchlist
+from app.extensions import csrf, db
+from app.util import DataAccess, report, ConfigLoader, DBUtil, Analyzer
 from flask import request
 
 from app.util.Analyzer import analyse_company
@@ -24,7 +24,7 @@ def get_all_symbols():
 
 
 @api.route('/api/v1/companies/<company>', methods=['GET'])
-@api.route('/api/v1/companies/<company>', methods=['GET'])
+@api.route('/api/v1/companies/<company>/', methods=['GET'])
 @cross_origin()
 def company_details(company):
     start_time = time.time()
@@ -187,6 +187,94 @@ def taskstatus(task_name, task_id):
         }
     return jsonify(response)
 
+
+@api.route('/api/v1/watchlist', methods=['POST', 'PUT'])
+@api.route('/api/v1/watchlist/', methods=['POST', 'PUT'])
+@csrf.exempt
+@cross_origin()
+def add_to_watchlist():
+    symbol = request.get_json(force=True)['symbol']
+
+    is_valid = CompanyInfo.query.get(symbol)
+
+    if not is_valid:
+        return jsonify({
+            "status": "failed",
+            "message": "Symbol doesn't exist"
+        }), 400
+
+    existing = None
+    try:
+        existing = Watchlist.query.filter(Watchlist.symbol == symbol).first()
+    except Exception as ex:
+        print("Table watchlist doesnt exist. Creating..")
+        Watchlist.__table__.create(db.session.bind)
+        db.session.commit()
+
+    if existing:
+        return jsonify({
+            "status": "failed",
+            "message": "Already present in watchlist"
+        }), 400
+    else:
+        watchlist = Watchlist()
+        watchlist.symbol = symbol
+        watchlist.user_id = 'bambebo'
+        watchlist.save()
+        return jsonify(get_watchlist_from_db()), 201
+
+
+# @api.route('/api/v1/watchlist/<symbol>', methods=['DELETE'])
+@api.route('/api/v1/watchlist/<symbol>/', methods=['DELETE'])
+@csrf.exempt
+@cross_origin()
+def remove_from_watchlist(symbol):
+
+    existing = None
+    try:
+        existing = Watchlist.query.filter(Watchlist.symbol == symbol).first()
+    except Exception as ex:
+        print("Table watchlist doesnt exist. Creating..")
+        Watchlist.__table__.create(db.session.bind)
+        db.session.commit()
+
+    if not existing:
+        return jsonify({
+            "status": "failed",
+            "message": "Symbol not found in watchlist"
+        }), 400
+    else:
+        db.session.delete(existing)
+        db.session.commit()
+        return jsonify(get_watchlist_from_db()), 200
+
+
+@api.route('/api/v1/watchlist', methods=['GET'])
+@api.route('/api/v1/watchlist/', methods=['GET'])
+@csrf.exempt
+@cross_origin()
+def get_watchlist():
+    watchlist = get_watchlist_from_db()
+    analyse_param = str(request.args.get('analyse'))
+    analysis = None
+    if analyse_param == 'true' or analyse_param == 'True':
+        analysis = [Analyzer.analyse(item) for item in items]
+    watchlist['analysis'] = analysis
+    return jsonify(watchlist), 200
+
+
+def get_watchlist_from_db():
+    watchlist = None
+    try:
+        watchlist = Watchlist.query.all()
+    except Exception as ex:
+        print("Table watchlist doesnt exist. Creating..")
+        Watchlist.__table__.create(db.session.bind)
+        db.session.commit()
+    items = [item.symbol for item in watchlist]
+    return {
+        'watchlist': items
+    }
 
 @api.route('/api/v1/tasks/analyse_watchlist', methods=['GET'])
 @api.route('/api/v1/tasks/analyse_watchlist/', methods=['GET'])

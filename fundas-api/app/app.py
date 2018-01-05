@@ -68,6 +68,8 @@ def create_app():
     authentication(app)
     init_cache(app)
 
+    app.url_map.strict_slashes = False
+
     return app
 
 

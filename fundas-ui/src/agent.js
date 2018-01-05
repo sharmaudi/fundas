@@ -26,11 +26,11 @@ const requests = {
 
 const companies = {
     all: () => requests.get(`/companies/`),
-    getCompany: (symbol) => requests.get(`/companies/${symbol}`),
+    getCompany: (symbol) => requests.get(`/companies/${symbol}/`),
     getFeatured: () => requests.get(`/featured/`),
     getMomentum: (symbol) => requests.get(`/companies/${symbol}/momentum/`),
     getPortfolio: () => requests.get(`/portfolio/`),
-    getPortfolioPerformance: () => requests.get(`/portfolio/performance`)
+    getPortfolioPerformance: () => requests.get(`/portfolio/performance/`)
 };
 
 export const tasks = {
@@ -42,6 +42,16 @@ export const tasks = {
     analyseWatchlist: () => requests.get(`/tasks/analyse_watchlist/`),
     analysePortfolio: () => requests.get(`/tasks/analyse_portfolio/`),
     taskStatus: (taskName, taskId) => requests.get(`/tasks/${taskName}/status/${taskId}/`)
+};
+
+export const watchlist = {
+    addToWatchlist: (symbol) => requests
+        .post(`/watchlist/`, {
+            'symbol': symbol
+        })
+    ,
+    removeFromWatchlist: (symbol) => requests.del(`/watchlist/${symbol}/`),
+    getWatchlist:() => requests.get(`/watchlist/`)
 };
 
 
