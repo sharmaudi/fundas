@@ -24,7 +24,25 @@ from app.util import DataAccess
 from app.util.JSONEncoder import CustomJSONEncoder
 from flask.ext.cache import Cache
 import time
+from celery import Celery
 
+CELERY_TASK_LIST = [
+
+]
+
+
+def create_celery_app(app=None):
+    app = app or create_app()
+    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'], include=CELERY_TASK_LIST)
+    celery.conf.update(app.config)
+    TaskBase = celery.Task
+    class ContextTask(TaskBase):
+        abstract = True
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+    celery.Task = ContextTask
+    return celery
 
 
 def create_app():

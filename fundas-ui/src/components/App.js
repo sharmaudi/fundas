@@ -16,7 +16,7 @@ import {Route, Switch} from 'react-router-dom';
 import ThemeDark from '../theme-dark'
 
 import {push} from 'react-router-redux'
-import DashboardPage from "./DashboardPage";
+import DashboardPage from "./dashboard/DashboardPage";
 import CompanyBase from "./CompanyBase";
 import HighchartsMore from 'highcharts-more';
 import ReactHighcharts from 'react-highcharts'

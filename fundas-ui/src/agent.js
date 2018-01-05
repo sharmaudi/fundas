@@ -33,6 +33,18 @@ const companies = {
     getPortfolioPerformance: () => requests.get(`/portfolio/performance`)
 };
 
+export const tasks = {
+    downloadBhavcopy: (periods) => requests
+        .post(`/tasks/download_bhavcopy/`, {
+            'periods': periods
+        })
+    ,
+    analyseWatchlist: () => requests.get(`/tasks/analyse_watchlist/`),
+    analysePortfolio: () => requests.get(`/tasks/analyse_portfolio/`),
+    taskStatus: (taskName, taskId) => requests.get(`/tasks/${taskName}/status/${taskId}/`)
+};
+
+
 export default {
     companies
 }

@@ -45,3 +45,4 @@ Flask-Cache
 Flask-Cors
 simplejson
 xlrd
+celery

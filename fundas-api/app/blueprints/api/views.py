@@ -4,6 +4,7 @@ import time
 from flask_cors import cross_origin
 
 from app.blueprints.api.models import CompanyInfo
+from app.extensions import csrf
 from app.util import DataAccess, report, ConfigLoader, DBUtil
 from flask import request
 
@@ -134,6 +135,95 @@ def get_featured():
 @cross_origin()
 def get_portfolio_performance():
     return jsonify(report.get_portfolio_performance_report())
+
+
+@api.route('/api/v1/tasks/<task_name>/status/<task_id>', methods=['GET'])
+@api.route('/api/v1/tasks/<task_name>/status/<task_id>/', methods=['GET'])
+@cross_origin()
+def taskstatus(task_name, task_id):
+    print(f"Task Name: {task_name}")
+    task_impl = None
+    if task_name == 'analyse_watchlist':
+        from app.blueprints.api.tasks import analyse_watchlist_task
+        task_impl = analyse_watchlist_task
+    elif task_name == 'analyse_portfolio':
+        from app.blueprints.api.tasks import analyse_portfolio_task
+        task_impl = analyse_portfolio_task
+    elif task_name == 'download_bhavcopy':
+        from app.blueprints.api.tasks import download_bhavcopy_task
+        task_impl = download_bhavcopy_task
+
+    if task_impl:
+        task = task_impl.AsyncResult(task_id)
+        if task.state == 'PENDING':
+            # job did not start yet
+            response = {
+                'state': task.state,
+                'current': 0,
+                'total': 1,
+                'status': 'Pending...'
+            }
+        elif task.state != 'FAILURE':
+            response = {
+                'state': task.state,
+                'current': task.info.get('current', 0),
+                'total': task.info.get('total', 1),
+                'status': task.info.get('status', '')
+            }
+            if 'result' in task.info:
+                response['result'] = task.info['result']
+        else:
+            # something went wrong in the background job
+            response = {
+                'state': task.state,
+                'current': 1,
+                'total': 1,
+                'status': str(task.info),  # this is the exception raised
+            }
+    else:
+        response = {
+            'state': 'Task not found',
+            'status': 'error'
+        }
+    return jsonify(response)
+
+
+@api.route('/api/v1/tasks/analyse_watchlist', methods=['GET'])
+@api.route('/api/v1/tasks/analyse_watchlist/', methods=['GET'])
+@cross_origin()
+def analyse_watchlist():
+    from app.blueprints.api.tasks import analyse_watchlist_task
+    task = analyse_watchlist_task.delay()
+
+    return jsonify({
+        'task_id': task.id
+    }), 202
+
+
+@api.route('/api/v1/tasks/analyse_portfolio', methods=['GET'])
+@api.route('/api/v1/tasks/analyse_portfolio/', methods=['GET'])
+@cross_origin()
+def analyse_portfolio():
+    from app.blueprints.api.tasks import analyse_portfolio_task
+    task = analyse_portfolio_task.delay()
+
+    return jsonify({
+        'task_id': task.id
+    }), 202
+
+
+@api.route('/api/v1/tasks/download_bhavcopy', methods=['POST'])
+@api.route('/api/v1/tasks/download_bhavcopy/', methods=['POST'])
+@csrf.exempt
+@cross_origin()
+def update_prices():
+    periods = request.get_json(force=True)['periods']
+    from app.blueprints.api.tasks import download_bhavcopy_task
+    task = download_bhavcopy_task.delay(int(periods))
+
+    return jsonify({
+        'task_id': task.id
+    }), 202
 
 
 def as_json(data):

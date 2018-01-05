@@ -14,11 +14,8 @@ const  style = {
         fontSize: '120%'
     },
     statsContainer: {
-        display: 'grid',
-        gridGap: '10px',
         backgroundColor: '#fff',
         color: '#444',
-        gridTemplateColumns: '1fr 1fr 1fr'
     },
     statsHeading: {
         color: '#b97957',
@@ -120,32 +117,32 @@ class PortfolioPerformance extends Component {
 }
 
 const Stats = ({portfolio}) => (
-  <div style={style.statsContainer}>
-      <div style={style.stats}>
+  <div style={style.statsContainer} className='row'>
+      <div style={style.stats} className='col-xs-12 col-sm-6 col-md-4 col-lg-4'>
           <span style={style.statsHeading}>Profit</span>{portfolio.performance.stats.totalProfit}
       </div>
 
-      <div style={style.stats}>
+      <div style={style.stats} className='col-xs-12 col-sm-6 col-md-4 col-lg-4'>
           <span style={style.statsHeading}>Open Profit</span> {portfolio.performance.stats.profit}
       </div>
 
-      <div style={style.stats}>
+      <div style={style.stats} className='col-xs-12 col-sm-6 col-md-4 col-lg-4'>
           <span style={style.statsHeading}>Closed Profit</span> {portfolio.performance.stats.closedProfit}
       </div>
 
-      <div style={style.stats}>
+      <div style={style.stats} className='col-xs-12 col-sm-6 col-md-4 col-lg-4'>
           <span style={style.statsHeading}>Profit %</span> {portfolio.performance.stats.profitPercentage}
       </div>
 
-      <div style={style.stats}>
+      <div style={style.stats} className='col-xs-12 col-sm-6 col-md-4 col-lg-4'>
           <span style={style.statsHeading}>CAGR</span> {portfolio.performance.stats.cagr}
       </div>
 
-      <div style={style.stats}>
+      <div style={style.stats} className='col-xs-12 col-sm-6 col-md-4 col-lg-4'>
           <span style={style.statsHeading}>Max Drawdown</span>  {portfolio.performance.stats.maxDrawdown}
       </div>
 
-      <div style={style.stats}>
+      <div style={style.stats} className='col-xs-12 col-sm-6 col-md-4 col-lg-4'>
           <span style={style.statsHeading}>Max Drawdown %</span> {portfolio.performance.stats.maxDrawdownPercentage}
       </div>
 

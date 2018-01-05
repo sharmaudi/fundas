@@ -19,7 +19,6 @@ def get_report(report_type="merged"):
 
     error = set([line.strip() for line in open(resolve_data("error_list.csv"), 'r')])
 
-    print("ERROR = " + str(error))
 
     # union = standalone_set.union(consolidated_set)
     #
@@ -36,9 +35,7 @@ def get_report(report_type="merged"):
     # }
     # return watchlist
 
-    print(standalone_set.transpose().to_dict())
 
-    print(consolidated_set.transpose().to_dict())
 
     response = {
         'standalone_list': standalone_set.index.tolist(),
@@ -60,7 +57,6 @@ def get_portfolio_report(report_type="merged"):
 
     error = set([line.strip() for line in open(resolve_data("portfolio_errors.csv"), 'r')])
 
-    print("ERROR = " + str(error))
 
     # union = standalone_set.union(consolidated_set)
     #
@@ -77,9 +73,7 @@ def get_portfolio_report(report_type="merged"):
     # }
     # return watchlist
 
-    print(standalone_set.transpose().to_dict())
 
-    print(consolidated_set.transpose().to_dict())
 
     response = {
         'standalone_list': standalone_set.index.tolist(),
