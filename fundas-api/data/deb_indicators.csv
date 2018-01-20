@@ -1,0 +1,168 @@
+Indicator Code|Indicator Name|Statement|Frequency
+BVSH|Book Value Per Share (Unadjusted for splits/rights/bonus)|Balance Sheet|Annual
+CWIP|Capital Work in Progress|Balance Sheet|Annual
+NBLOCK|Net Block|Balance Sheet|Annual
+RSRV|Reserves|Balance Sheet|Annual
+EQCAP|Shareholders Equity|Balance Sheet|Annual
+WC|Working Capital|Balance Sheet|Annual
+CEPS|Cash Earning Per Share (Unadjusted for splits/rights/bonus)|Cashflow|Annual
+CFA|Cash from Financing Activity|Cashflow|Annual
+CFI|Cash from Investing Activity|Cashflow|Annual
+CFO|Cash from Operating Activity|Cashflow|Annual
+NCF|Net Cash Flow|Cashflow|Annual
+MCAP|Market Capitalization|Risk, Pricing and Valuation|Annual/Quarterly
+BSEVOL|BSE Trade Volume|Risk, Pricing and Valuation|Annual/Quarterly
+BSEC|Unadjusted BSE Close Price|Risk, Pricing and Valuation|Annual/Quarterly
+BSEH|Unadjusted BSE High Price|Risk, Pricing and Valuation|Annual/Quarterly
+BSEL|Unadjusted BSE Low Price|Risk, Pricing and Valuation|Annual/Quarterly
+BSEO|Unadjusted BSE Open Price|Risk, Pricing and Valuation|Annual/Quarterly
+CAPRATIO|Capitalization Ratio|Solvency and Fundamentals|Annual
+IC|Interest Coverage|Solvency and Fundamentals|Annual
+DEBTEBIDT|Long Term Debt to EBIDTA|Solvency and Fundamentals|Annual
+LTDE|Long Term Debt to Equity (Net Worth)|Solvency and Fundamentals|Annual
+SOLRATIO|Solvency Ratio|Solvency and Fundamentals|Annual
+EPS1|1 Year CAGR Growth in Diluted Earnings Per Share (Adjusted for splits/rights/bonus)|Income Statement|Annual
+DIV1|1 Year CAGR Growth in Dividends|Income Statement|Annual
+EBIDT1|1 Year CAGR Growth in EBIDTA|Income Statement|Annual
+NI1|1 Year CAGR Growth in Net Income|Income Statement|Annual
+OPCF1|1 Year CAGR Growth in Operating Cashflow|Income Statement|Annual
+REV1|1 Year CAGR Growth in Revenue|Income Statement|Annual
+EPS2|3 Year CAGR Growth in Diluted Earnings Per Share (Adjusted for splits/rights/bonus)|Income Statement|Annual
+DIV3|3 Year CAGR Growth in Dividends|Income Statement|Annual
+EBIDT3|3 Year CAGR Growth in EBIDTA|Income Statement|Annual
+NI3|3 Year CAGR Growth in Net Income|Income Statement|Annual
+OPCF3|3 Year CAGR Growth in Operating Cashflow|Cashflow|Annual
+REV3|3 Year CAGR Growth in Revenue|Income Statement|Annual
+EBITAVG|5 Year Average EBIDTA|Median Metrics|Annual
+EPS5|5 Year CAGR Growth in Diluted Earnings Per Share (Adjusted for splits/rights/bonus)|Income Statement|Annual
+DIV5|5 Year CAGR Growth in Dividends|Income Statement|Annual
+EBIDT5|5 Year CAGR Growth in EBIDTA|Income Statement|Annual
+NI5|5 Year CAGR Growth in Net Income|Income Statement|Annual
+OPCF5|5 Year CAGR Growth in Operating Cashflow|Cashflow|Annual
+REV5|5 Year CAGR Growth in Revenue|Income Statement|Annual
+ETR|Corporate Tax Rate|Income Statement|Annual/Quarterly
+DEP|Depreciation Expense|Income Statement|Annual/Quarterly
+DIVSH|Dividend Per Share (Unadjusted for splits/rights/bonus)|Income Statement|Annual/Quarterly
+EBIDT|Earning Before Interest, Depreciation & Taxes (EBIDTA)|Income Statement|Annual/Quarterly
+EPS|Earnings per Diluted Share (Unadjusted for splits/rights/bonus)|Income Statement|Annual/Quarterly
+EBIDTSH|EBIDTA Per Share (Unadjusted for splits/rights/bonus)|Income Statement|Annual/Quarterly
+TAX|Income Tax Expense|Income Statement|Annual/Quarterly
+INT|Interest|Income Statement|Annual/Quarterly
+NP|Net Income|Income Statement|Annual/Quarterly
+SHARE|Number of Outstanding Shares (Unadjusted for splits/rights/bonus)|Income Statement|Annual/Quarterly
+OP|Operating Profit|Income Statement|Annual/Quarterly
+OI|Other Income|Income Statement|Annual/Quarterly
+PBT|Profit Before Tax|Income Statement|Annual
+SR|Revenue|Income Statement|Annual/Quarterly
+REVSH|Revenue Per Share (Unadjusted for splits/rights/bonus)|Income Statement|Annual/Quarterly
+DIV|Total Annual Dividends|Income Statement|Annual/Quarterly
+CROCI|Cash Return on Capital Invested|Profitability and Management Efficiency|Annual
+DAYWC|Days in Working Capital|Profitability and Management Efficiency|Annual
+DIVPAY|Dividend Payout|Solvency and Fundamentals|Annual/Quarterly
+DIVYLD|Dividend Yield|Risk, Pricing and Valuation|Annual/Quarterly
+EYield|Earnings Yield|Risk, Pricing and Valuation|Annual
+EBIDTPCT|EBIDTA Margin|Profitability and Management Efficiency|Annual/Quarterly
+IBTPCT|IBT Margin|Profitability and Management Efficiency|Annual/Quarterly
+NETPCT|Net Margin|Profitability and Management Efficiency|Annual/Quarterly
+OPCASHPCT|Operating Cashflow to Revenue|Profitability and Management Efficiency|Annual
+OPMSH|Operating Profit Per Share (Unadjusted for splits/rights/bonus)|Income Statement|Annual/Quarterly
+OPMPCT|Operating Margin|Profitability and Management Efficiency|Annual/Quarterly
+RETRATIO|Retention Ratio|Solvency and Fundamentals|Annual/Quarterly
+ROCE|Return on Capital Employed|Profitability and Management Efficiency|Annual
+ROE|Return on Equity|Profitability and Management Efficiency|Annual
+TIMINT|Times Interest Earned|Solvency and Fundamentals|Annual
+FKD|Accounting Cost of Debt|Risk, Pricing and Valuation|Annual
+KD|Cost of Debt (DMARKET Method)|Risk, Pricing and Valuation|Annual
+KE|Cost of Equity (Capital Asset Pricing Model Method)|Risk, Pricing and Valuation|Annual
+CREDIT|Credit/Default Spread|Risk, Pricing and Valuation|Annual
+LBETA|Levered Beta|Risk, Pricing and Valuation|Annual/Quarterly
+BBETA|Levered Beta (Bloomberg Adjustment)|Risk, Pricing and Valuation|Annual
+PEG|Price by Earnings to Growth|Risk, Pricing and Valuation|Annual
+PBV|Price to Book Value|Risk, Pricing and Valuation|Annual
+PE|Price to Earnings|Risk, Pricing and Valuation|Annual
+PS|Price to Sales (Revenue)|Risk, Pricing and Valuation|Annual
+WD|Weight of Debt (WACC Caluclation)|Risk, Pricing and Valuation|Annual
+WE|Weight of Equity (WACC Calcualtion)|Risk, Pricing and Valuation|Annual
+WACC|Weighted Average Cost of Capital|Risk, Pricing and Valuation|Annual
+TI|Total Income|Income Statement|Annual/Quarterly
+OEXPNS|Operating Expenses|Income Statement|Annual/Quarterly
+PBDT|Profit Before Depriciation and Tax|Income Statement|Annual/Quarterly
+SHAREFUND|Shareholder's Funds|Balance Sheet|Annual
+DEBT|Total Debt|Balance Sheet|Annual
+CL|Current Liabilities|Balance Sheet|Annual
+TL|Total Liabilities|Balance Sheet|Annual
+CASH|Cash and Bank Balances|Balance Sheet|Annual
+TA|Total Assets|Balance Sheet|Annual
+CRATIO|CURRENT_RATIO|Profitability and Management Efficiency|Annual
+BV1|ONEYR_BV_GROWTH|Balance Sheet|Annual
+ROA|Return on Assets|Profitability and Management Efficiency|Annual
+FV|Face Value|Income Statement|Quarterly
+DIV_PCT|Percent of Dividend Declared (As a percent of Face Value)|Solvency and Fundamentals|Quarterly
+CE|Capital Employed|Balance Sheet|Annual
+REVSH1|1 Year CAGR Growth in Revenue per Share|Income Statement|Annual
+REVSH3|3 Year CAGR Growth in Revenue per Share|Income Statement|Annual
+REVSH5|5 Year CAGR Growth in Revenue per Share|Income Statement|Annual
+OPM1|1 Year CAGR Growth in Operating Profit|Income Statement|Annual
+OPM3|3 Year CAGR Growth in Operating Profit|Income Statement|Annual
+OPM5|5 Year CAGR Growth in Operating Profit|Income Statement|Annual
+OPMSH1|1 Year CAGR Growth in Operating Profit per Share|Income Statement|Annual
+OPMSH3|3 Year CAGR Growth in Operating Profit per Share|Income Statement|Annual
+OPMSH5|5 Year CAGR Growth in Operating Profit per Share|Income Statement|Annual
+EBIDTSH1|1 Year CAGR Growth in EBIDTA per Share|Income Statement|Annual
+EBIDTSH3|3 Year CAGR Growth in EBIDTA per Share|Income Statement|Annual
+EBIDTSH5|5 Year CAGR Growth in EBIDTA per Share|Income Statement|Annual
+BVSH1|1 Year CAGR Growth in Book Value per Share|Balance Sheet|Annual
+BVSH3|3 Year CAGR Growth in Book Value per Share|Balance Sheet|Annual
+BVSH5|5 Year CAGR Growth in Book Value per Share|Balance Sheet|Annual
+CEPS1|1 Year CAGR Growth in Cash EPS per Share|Cashflow|Annual
+CEPS3|3 Year CAGR Growth in Cash EPS per Share|Cashflow|Annual
+CEPS5|5 Year CAGR Growth in Cash EPS per Share|Cashflow|Annual
+ROIC|Return on Invested Capital|Profitability and Management Efficiency|Annual
+ASETTO|Asset Turnover|Profitability and Management Efficiency|Annual
+CASHDEBT|Cash to Debt Ratio|Solvency and Fundamentals|Annual
+EQASSET|Equity to Asset Ratio|Solvency and Fundamentals|Annual
+PCFO|Price to Cashflow from Operations|Risk, Pricing and Valuation|Annual
+EV|Enterprise Value|Risk, Pricing and Valuation|Annual
+EVEBIT|Enterprise Value to EBIT|Risk, Pricing and Valuation|Annual
+EVEBIDTA|Enterprise Value to EBITDA|Risk, Pricing and Valuation|Annual
+EVREV|Enterprise Value to Sales|Risk, Pricing and Valuation|Annual
+CASHRATIO|Cash Ratio|Solvency and Fundamentals|Annual
+ACCRUALS|Accruals|Solvency and Fundamentals|Annual
+CFO_SALES|CFO to Sales|Profitability and Management Efficiency|Annual
+CFO_DEBT|CFO to Debt|Solvency and Fundamentals|Annual
+DEBT_ASSETS|Debt to Assets |Solvency and Fundamentals|Annual
+DEBT_CE|Debt To Capital |Solvency and Fundamentals|Annual
+AE|Assets to Shareholder Equity|Solvency and Fundamentals|Annual
+DIVCVR|Dividend Cover|Solvency and Fundamentals|Annual
+EV_NP|EV to Earnings|Risk, Pricing and Valuation|Annual
+EV_ASSETS|EV to Assets|Risk, Pricing and Valuation|Annual
+EV_CFO|EV to CFO|Risk, Pricing and Valuation|Annual
+CASHTO|Cash Turnover|Profitability and Management Efficiency|Annual
+WCTO|Working Capital Turnover|Profitability and Management Efficiency|Annual
+NBTO|Fixed Asset Turnover|Profitability and Management Efficiency|Annual
+REV1Q|1 Quarter Growth in Revenue|Income Statement|Quarterly
+REV4Q|4 Quarter Growth in Revenue|Income Statement|Quarterly
+REV8Q|8 Quarter Growth in Revenue|Income Statement|Quarterly
+REVSH1Q|1 Quarter Growth in Revenue per Share|Income Statement|Quarterly
+REVSH4Q|4 Quarter Growth in Revenue per Share|Income Statement|Quarterly
+REVSH8Q|8 Quarter Growth in Revenue per Share|Income Statement|Quarterly
+OP1Q|1 Quarter Growth in Operating Profit|Income Statement|Quarterly
+OP4Q|4 Quarter Growth in Operating Profit|Income Statement|Quarterly
+OP8Q|8 Quarter Growth in Operating Profit|Income Statement|Quarterly
+OPSH1Q|1 Quarter Growth in  Operating Profit per Share|Income Statement|Quarterly
+OPSH4Q|4 Quarter Growth in Operating Profit per Share|Income Statement|Quarterly
+OPSH8Q|8 Quarter Growth in Operating Profit per Share|Income Statement|Quarterly
+EBIDT1Q|1 Quarter Growth in EBIDTA|Income Statement|Quarterly
+EBIDT4Q|4 Quarter Growth in EBIDTA|Income Statement|Quarterly
+EBIDT8Q|8 Quarter Growth in EBIDTA|Income Statement|Quarterly
+EBIDTSH1Q|1 Quarter Growth in EBIDTA per Share |Income Statement|Quarterly
+EBIDTSH4Q|4 Quarter Growth in EBIDTA per Share|Income Statement|Quarterly
+EBIDTSH8Q|8 Quarter Growth in EBIDTA per Share|Income Statement|Quarterly
+NI1Q|1 Quarter Growth in Net Income|Income Statement|Quarterly
+NI4Q|4 Quarter Growth in Net Income|Income Statement|Quarterly
+NI8Q|8 Quarter Growth in Net Income|Income Statement|Quarterly
+EPS1Q|1 Quarter Growth in EPS|Income Statement|Quarterly
+EPS4Q|4 Quarter Growth in EPS|Income Statement|Quarterly
+EPS8Q|8 Quarter Growth in EPS|Income Statement|Quarterly
+CA|Current Assets|Balance Sheet|Annual
+CFROA|Cash Flow Return on Assets|Profitability and Management Efficiency|Annual
