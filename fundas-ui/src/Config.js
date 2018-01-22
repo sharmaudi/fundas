@@ -22,7 +22,7 @@ export default {
                     { text: 'Analysis', link: 'analysis/standalone'}
             ],
             link: '/charts' },
-        { text: 'Featured', icon: <PermIdentity/>, link: '/featured/standalone' },
+        { text: 'Featured', icon: <PermIdentity/>, link: '/featured/analysis/standalone' },
         { text: 'Portfolio', icon: <Web/>, link: '/portfolio' }
 
     ],

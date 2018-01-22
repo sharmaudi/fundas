@@ -41,7 +41,7 @@ class TaskWidget extends Component {
     };
 
     performTask() {
-        const {taskType, onclick, args, label} = this.props;
+        const {taskType, onclick, label} = this.props;
         const func = onclick;
         func(this.state.param0Value, this.state.param1Value, this.state.param2Value).then(res => {
             console.log(`Response: `, res);

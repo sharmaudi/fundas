@@ -1,23 +1,18 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ReactHighcharts from 'react-highcharts'
-import {blue500, blue300,white} from "material-ui/styles/colors";
+import {blue300, blue500, white} from "material-ui/styles/colors";
 import {ResponsiveContainer} from "recharts";
 import {Card, CardHeader, CardTitle, Checkbox} from "material-ui";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import withWidth from "material-ui/utils/withWidth";
 import compose from "recompose/compose";
-import {
-    CHANGE_DATA_TYPE, FEATURED_LOAD, WATCHLIST_ADD, WATCHLIST_DELETE,
-    WATCHLIST_LOAD
-} from "../constants/actionTypes";
+import {WATCHLIST_ADD, WATCHLIST_DELETE, WATCHLIST_LOAD} from "../constants/actionTypes";
 
 import {watchlist} from "../agent";
 import ActionFavorite from 'material-ui/svg-icons/action/favorite';
 import ActionFavoriteBorder from 'material-ui/svg-icons/action/favorite-border';
-import agent from "../agent";
-
 
 
 const styles = {

@@ -20,7 +20,7 @@ import DashboardPage from "./dashboard/DashboardPage";
 import CompanyBase from "./CompanyBase";
 import HighchartsMore from 'highcharts-more';
 import ReactHighcharts from 'react-highcharts'
-import FeaturedPage from "./FeaturedPage";
+import FeaturedPage from "./featured/FeaturedPage";
 import {Snackbar} from "material-ui";
 import PortfolioBase from "./portfolio/PortfolioBase";
 
@@ -138,7 +138,8 @@ class App extends Component {
                                 <Route path="/portfolio/:pageType" component={PortfolioBase}/>
                                 <Route path="/portfolio" component={PortfolioBase}/>
 
-                                <Route path="/featured/:dataType" component={FeaturedPage}/>
+                                <Route path="/featured/:pageType/:dataType" component={FeaturedPage}/>
+                                <Route path="/featured" component={FeaturedPage}/>
                                 <Route path="/companies/:id/:chartType/:dataType" component={CompanyBase}/>
                                 <Route path="/companies/:id/:chartType" component={CompanyBase}/>
                                 <Route path="/companies/:id/" component={CompanyBase}/>

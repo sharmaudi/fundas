@@ -15,6 +15,7 @@ from flask_login import current_user, login_user
 from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.contrib.fixers import ProxyFix
 
+from app.CeleryApp import CeleryApp
 from app.blueprints.api.views import api
 from app.blueprints.fundas.views import fundas
 from app.blueprints.user.models import User, OAuth
@@ -33,19 +34,11 @@ CELERY_TASK_LIST = [
 
 def create_celery_app(app=None):
     app = app or create_app()
-    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'], include=CELERY_TASK_LIST)
-    celery.conf.update(app.config)
-    TaskBase = celery.Task
-    class ContextTask(TaskBase):
-        abstract = True
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
-    celery.Task = ContextTask
+    celery = CeleryApp(app, celery_task_list=CELERY_TASK_LIST)
     return celery
 
 
-def create_app():
+def create_app(conf_override=None):
     """
     Creates a flask application using the App Factory pattern
     :return: Flask app
@@ -53,6 +46,11 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object('config.settings')
     app.config.from_pyfile('settings.py', silent=True)
+
+    if conf_override:
+        for k, v in conf_override.items():
+            print(f"Overriding {k} to {v}")
+            app.config[k] = v
 
     app.config['TESTING'] = False
 

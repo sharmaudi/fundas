@@ -20,7 +20,7 @@ services:
 
   celery:
     build: ./fundas-api
-    command: celery worker -B -l info -A app.blueprints.api.tasks
+    command: celery worker -B -l info -A app.blueprints.api.tasks.celery
     env_file:
       - '.env'
     volumes:

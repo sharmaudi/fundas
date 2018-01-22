@@ -76,16 +76,17 @@ def bulk_insert_technical_data(ret_list):
 
 
 def get_engine():
-    try:
-        from instance.settings import SQLALCHEMY_DATABASE_URI
-        uri = SQLALCHEMY_DATABASE_URI
-    except ImportError as ex:
-        from config.settings import SQLALCHEMY_DATABASE_URI
-        uri = SQLALCHEMY_DATABASE_URI
+    engine = db.engine
+    if not engine:
+        try:
+            from instance.settings import SQLALCHEMY_DATABASE_URI
+            uri = SQLALCHEMY_DATABASE_URI
+        except ImportError as ex:
+            from config.settings import SQLALCHEMY_DATABASE_URI
+            uri = SQLALCHEMY_DATABASE_URI
 
-    engine = create_engine(uri)
-
-    print(f"DB URI is {uri}")
+        engine = create_engine(uri)
+        print(f"DB URI is {uri}")
     return engine
 
 

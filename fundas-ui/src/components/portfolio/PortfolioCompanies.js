@@ -1,21 +1,10 @@
 import React, {Component} from 'react';
 import compose from "recompose/compose";
-import withWidth, {SMALL} from "material-ui/utils/withWidth";
+import withWidth from "material-ui/utils/withWidth";
 import {connect} from "react-redux";
-import Radar from "../Radar";
+import InfoView from "../featured/InfoView";
 
 
-const style = {
-    gridLarge: {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr'
-    },
-    gridSmall: {
-        display: 'grid',
-        gridTemplateColumns: '1fr'
-    }
-
-};
 
 class PortfolioCompanies extends Component {
 
@@ -32,31 +21,10 @@ class PortfolioCompanies extends Component {
 
 
         return (
-            <div style={this.props.width === SMALL ? style.gridSmall : style.gridLarge}>
-                {
-                    Object.keys(portfolio.companies.standalone).map(e => {
-
-                        let data = portfolio.companies.standalone[e];
-
-                        return (
-                            <Radar
-                                showHeader={true}
-                                key={e}
-                                company={e}
-                                scores={[data.performance, data.health, data.valuation, data.dividends]}
-                                metrics={['performance', 'health', 'valuation', 'dividends']}
-                                acceptableScores={[7, 6, 5, 3]}
-                                showLink={true}
-                                linkDataType={'standalone'}
-
-                            />
-
-
-                        )
-                    })
-                }
-
-            </div>
+            <InfoView
+             featured={portfolio.companies}
+             dataType={'standalone'}
+            />
         );
     }
 }

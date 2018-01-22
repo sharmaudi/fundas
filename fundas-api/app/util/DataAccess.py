@@ -15,8 +15,6 @@ BROKER_URL = 'redis://redis:6379/2'
 
 q_api_key = 'R27JMJXy2W-fLV6LX48P'
 
-engine = DBUtil.get_engine()
-
 screener_name_mismatch = {
     'AVANTI': 'AVANTIFEED',
     'POKARNA': '532486',
@@ -95,6 +93,7 @@ indicators_available_quarterly = [
 
 def get_company_code(code, is_bse=False):
     sql = "SELECT symbol, {} FROM company_info where {} = %s"
+    engine = DBUtil.get_engine()
 
     if is_bse:
         sql = sql.format('bse_code', 'bse_code')
@@ -108,6 +107,8 @@ def get_company_code(code, is_bse=False):
 
 def get_company_dataframe(company_name, info=None, latest_standalone=None, latest_consolidated=None):
     sql = "SELECT * FROM {} WHERE symbol=%s"
+
+    engine = DBUtil.get_engine()
 
     df_a_s = pd.read_sql(sql.format('annual_standalone'),
                          engine,
@@ -154,28 +155,81 @@ def get_data(company_name, company_dfs=None, indicators=None):
 
     df_q_c = company_dfs['quarterly_consolidated'].reset_index().set_index('date_str').drop('date', 1)
 
-    return {
-        'annual_standalone': {
-            'index': df_a_s.transpose().index.tolist(),
-            'data': df_a_s.transpose().to_dict(orient='split')
-        },
-        'annual_consolidated': {
-            'index': df_a_c.transpose().index.tolist(),
-            'data': df_a_c.transpose().to_dict(orient='split')
-        },
-        'quarterly_standalone': {
-            'index': df_q_s.transpose().index.tolist(),
-            'data': df_q_s.transpose().to_dict(orient='split')
-        },
-        'quarterly_consolidated': {
-            'index': df_q_c.transpose().index.tolist(),
-            'data': df_q_c.transpose().to_dict(orient='split')
+    if not indicators:
+        return {
+            'annual_standalone': {
+                'index': df_a_s.transpose().index.tolist(),
+                'data': df_a_s.transpose().to_dict(orient='split')
+            },
+            'annual_consolidated': {
+                'index': df_a_c.transpose().index.tolist(),
+                'data': df_a_c.transpose().to_dict(orient='split')
+            },
+            'quarterly_standalone': {
+                'index': df_q_s.transpose().index.tolist(),
+                'data': df_q_s.transpose().to_dict(orient='split')
+            },
+            'quarterly_consolidated': {
+                'index': df_q_c.transpose().index.tolist(),
+                'data': df_q_c.transpose().to_dict(orient='split')
+            }
         }
-    }
+    else:
+        df_a_s = df_a_s[indicators]
+        df_a_c = df_a_c[indicators]
+        result = {
+            'annual_standalone': {
+                'index': df_a_s.transpose().index.tolist(),
+                'data': df_a_s.transpose().to_dict(orient='split')
+            },
+            'annual_consolidated': {
+                'index': df_a_c.transpose().index.tolist(),
+                'data': df_a_c.transpose().to_dict(orient='split')
+            }
+        }
+
+        q_indicators = [i for i in indicators if i in indicators_available_quarterly]
+
+        if q_indicators:
+            df_q_s = df_q_s[q_indicators]
+            df_q_c = df_q_c[q_indicators]
+            result.update({
+                'quarterly_standalone': {
+                    'index': df_q_s.transpose().index.tolist(),
+                    'data': df_q_s.transpose().to_dict(orient='split')
+                },
+                'quarterly_consolidated': {
+                    'index': df_q_c.transpose().index.tolist(),
+                    'data': df_q_c.transpose().to_dict(orient='split')
+                }
+            })
+        return result
+
+
+def get_featured_companies(location='/dropbox'):
+    company_list = []
+    ticker_list = []
+    featured = [f'{location}/watchlist_bse.tls',
+                               f'{location}/watchlist.tls']
+    for list in featured:
+        ticker_list += [line.rstrip('\n') for line in open(list)]
+    for ticker in ticker_list:
+        is_bse = False
+        if ticker.isnumeric():
+            is_bse = True
+        l = get_company_code(ticker, is_bse)
+        if l:
+            comp = l[0]['symbol']
+            if comp not in company_list:
+                company_list.append(comp)
+        else:
+            print(f"Ticker {ticker} not found in database")
+    return company_list
 
 
 def get_all_symbols():
     sql = "SELECT symbol FROM latest_s_a"
+    engine = DBUtil.get_engine()
     return pd.read_sql(sql, engine)['symbol'].tolist()
 
 

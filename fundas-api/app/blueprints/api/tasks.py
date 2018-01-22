@@ -1,16 +1,16 @@
-from app.app import create_celery_app
+from app.app import create_celery_app, create_app
 from app.util import BhavcopyDownloader
 
-celery = create_celery_app()
+celeryApp = create_celery_app()
+app = celeryApp.app
+celery = celeryApp.celery
 
 
 @celery.task(bind=True)
 def analyse_watchlist_task(self):
     print("Analysing watchlist")
     from app.util import analyse_watchlist as aw
-    aw.execute(['/dropbox/watchlist_bse.tls',
-                               '/dropbox/watchlist.tls'])
-
+    aw.execute(app=app)
     return {
         'status': 'done',
         'progress': 100
@@ -21,7 +21,7 @@ def analyse_watchlist_task(self):
 def analyse_portfolio_task(self):
     print("Analysing portfolio")
     from app.util import analyse_portfolio as ap
-    ap.execute('/dropbox/tradebook.xlsx')
+    ap.execute('/dropbox/tradebook.xlsx', app=app)
     return {
         'status': 'done',
         'progress': 100

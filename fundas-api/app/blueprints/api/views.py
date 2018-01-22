@@ -1,3 +1,6 @@
+import pickle
+
+import datetime
 from flask import Blueprint, jsonify, current_app, Response
 import time
 
@@ -9,6 +12,7 @@ from app.util import DataAccess, report, ConfigLoader, DBUtil, Analyzer
 from flask import request
 
 from app.util.Analyzer import analyse_company
+from app.util.PathResolver import resolve_data
 
 api = Blueprint('api', __name__, template_folder='templates')
 
@@ -115,20 +119,49 @@ def get_momentum(company):
 @cross_origin()
 def get_portfolio():
 
+
+    companies = None
+
+    try:
+        companies = pickle.load(open(resolve_data('portfolio-companies.pkl'), "rb"))
+    except Exception as ex:
+        print(f"Error while reading portfolio companies: {ex}")
+
     ret_dict = {
-        'companies': report.get_portfolio_report(),
+        'companies': companies,
         'performance': report.get_portfolio_performance_report()
     }
 
-    return jsonify(ret_dict)
+    return as_json(ret_dict)
 
 
 @api.route('/api/v1/featured', methods=['GET'])
 @api.route('/api/v1/featured/', methods=['GET'])
 @cross_origin()
 def get_featured():
-    return jsonify(report.get_report())
+    featured = pickle.load(open(resolve_data('featured.pkl'), "rb"))
+    return as_json(featured)
 
+
+def get_company_snapshot(comp):
+
+    info = CompanyInfo.query.get(comp)
+
+    df = DataAccess.get_company_dataframe(comp,
+                                          info=info)
+    data = DataAccess.get_data(comp, company_dfs=df, indicators=['SR'])
+    return {
+        'info': DBUtil.to_json(info),
+        'data': data
+    }
+
+def get_featured_companies():
+    company_list = []
+    featured = ['/dropbox/watchlist_bse.tls',
+                               '/dropbox/watchlist.tls']
+    for list in featured:
+        company_list += [line.rstrip('\n') for line in open(list)]
+    return company_list
 
 @api.route('/api/v1/portfolio/performance', methods=['GET'])
 @api.route('/api/v1/portfolio/performance/', methods=['GET'])
@@ -314,6 +347,11 @@ def update_prices():
     }), 202
 
 
+def datetime_handler(x):
+    if isinstance(x, datetime.datetime):
+        return x.isoformat()
+
+
 def as_json(data):
-    return Response(response=json.dumps(data, ignore_nan=True),
+    return Response(response=json.dumps(data, ignore_nan=True, default=datetime_handler),
                     mimetype='application/json')

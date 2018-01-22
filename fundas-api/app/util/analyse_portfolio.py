@@ -285,7 +285,7 @@ def get_index_df(start_date, name):
     return index_df1
 
 
-def execute(local_filename='/Users/Udit/Dropbox/Watchlist/tradebook.xlsx'):
+def execute(local_filename='/Users/Udit/Dropbox/Watchlist/tradebook.xlsx', app=None):
     skip_row = 11
     cols = 'B:J'
     splits = {'SUNILHITEC': [20, '01-12-2016'],
@@ -369,7 +369,8 @@ def execute(local_filename='/Users/Udit/Dropbox/Watchlist/tradebook.xlsx'):
 
     company_list = [val for val in portfolio['openPositions'].keys()]
 
-    Analyzer.analyse_list(company_list, 'portfolio', map_symbols=False)
+    df_c, error_list = Analyzer.analyse_list(company_list, app=app)
+    pickle.dump(df_c, open(resolve_data('portfolio-companies.pkl'), "wb"))
 
 
 if __name__ == "__main__":
