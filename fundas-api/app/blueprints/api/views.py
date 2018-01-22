@@ -297,14 +297,14 @@ def get_watchlist():
 
 
 def get_watchlist_from_db():
-    watchlist = None
+    items = []
     try:
         watchlist = Watchlist.query.all()
+        items = [item.symbol for item in watchlist]
     except Exception as ex:
         print("Table watchlist doesnt exist. Creating..")
         Watchlist.__table__.create(db.session.bind)
         db.session.commit()
-    items = [item.symbol for item in watchlist]
     return {
         'watchlist': items
     }

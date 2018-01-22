@@ -31,7 +31,7 @@ def download_bse_bhavcopy(date, save_location):
         df['DATE'] = date_str_file
 
         date_str = date.strftime('%d%b%Y').upper()
-        df.to_csv(f"{save_location}/BSEEQ{date_str}.csv")
+        df.to_csv(f"{save_location}/{date_str}.csv")
     else:
         raise ValueError(f"Received Error code {r.status_code} while downloading for date ${date_str} from url ${url}")
 
@@ -67,7 +67,7 @@ def download_nse_bhavcopy(date, save_location):
         df = df.query('SERIES == "EQ" or SERIES == "BE"')
         df = df[['ISIN', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'TOTTRDQTY']]
         df['DATE'] = date_str_file
-        df.to_csv(f"{save_location}/NSEEQ{date_str}.csv")
+        df.to_csv(f"{save_location}/{date_str}.csv")
     else:
         raise ValueError(f"Received Error code {r.status_code} while downloading for date ${date_str} from url ${url}")
 
