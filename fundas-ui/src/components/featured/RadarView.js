@@ -23,8 +23,8 @@ class RadarView extends Component {
                                     showHeader={true}
                                     key={company}
                                     company={company}
-                                    scores={[data.performance, data.health, data.valuation, data.dividends]}
-                                    metrics={['performance','health', 'valuation', 'dividends']}
+                                    scores={[data.performance, data.health, data.valuation, data.dividends, data.momentum]}
+                                    metrics={['performance','health', 'valuation', 'dividends','momentum']}
                                     acceptableScores={[7,6,5,3]}
                                     showLink={true}
                                     linkDataType={dataType}

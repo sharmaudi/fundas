@@ -4,7 +4,7 @@ WORKDIR /app
 
 ADD package.json /app/package.json
 RUN npm install
-
+RUN npm install react-paginate --save
 ADD . /app
 
 EXPOSE 3000

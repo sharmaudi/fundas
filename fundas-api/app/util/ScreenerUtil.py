@@ -27,6 +27,7 @@ def get_screener_dicts(screener_code=None, bse_code=None, company_info=None):
         con = con['stats']
 
     return {
+        'info': company_info,
         'standalone': std,
         'consolidated': con
     }

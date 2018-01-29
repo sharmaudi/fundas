@@ -20,7 +20,16 @@ services:
 
   celery:
     build: ./fundas-api
-    command: celery worker -B -l info -A app.blueprints.api.tasks.celery
+    command: celery worker -l info -A app.blueprints.api.tasks.celery -Q celery
+    env_file:
+      - '.env'
+    volumes:
+      - './fundas-api:/fundas-api'
+      - '/Users/Udit/Dropbox/Watchlist:/dropbox'
+
+  celery-periodic:
+    build: ./fundas-api
+    command: celery worker -B -l info -A app.blueprints.api.tasks.celery -Q periodic --concurrency=1
     env_file:
       - '.env'
     volumes:

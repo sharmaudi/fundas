@@ -185,6 +185,61 @@ def eval_expr(expression, latest, df, silent=True):
 
     return ret
 
+
+def perform_momentum_checks(df, silent=False):
+    df = df.sort_index(ascending=False)
+    latest = get_latest_non_zero(df, [
+        'roc30',
+        'roc60',
+        'hhv52',
+        'hhv_all_time',
+        'close'
+    ])
+
+    checks = [{
+        'id': 'mom_check1',
+        'rule': 'ROC 30 >= 30',
+        'outcome': perform_operation('(latest.roc30 >= 30).tolist()[0]', latest, df, silent=silent),
+        'lhs': eval_expr('latest.roc30.tolist()[0]', latest, df),
+        'rhs': 30,
+        'lcol': 'ROC 30',
+        'rcol': None
+    }, {
+        'id': 'mom_check2',
+        'rule': 'ROC 60 > 30 & ROC 60 < 100',
+        'outcome': perform_operation('(latest.roc60 < 100).tolist()[0] and (latest.roc60 > 30).tolist()[0]',
+                                     latest,
+                                     df,
+                                     silent=silent),
+        'lhs': eval_expr('latest.roc60.tolist()[0]', latest, df),
+        'rhs': 100,
+        'lcol': 'ROC 60',
+        'rcol': None
+    }, {
+        'id': 'mom_check3',
+        'rule': 'Current Price with 10% of HHV 52',
+        'outcome': perform_operation('latest.close.tolist()[0] >= (latest.hhv52.tolist()[0] * .9)', latest, df, silent=silent),
+        'lhs': eval_expr('latest.close.tolist()[0]', latest, df),
+        'rhs': eval_expr('(latest.hhv52.tolist()[0])', latest, df),
+        'lcol': 'Current Price',
+        'rcol': 'HHV 52'
+    },
+        {
+            'id': 'mom_check4',
+            'rule': 'Current Price with 10% of All time high(4 years)',
+            'outcome': perform_operation('latest.close.tolist()[0] >= (latest.hhv_all_time.tolist()[0] * .9)', latest, df,
+                                         silent=silent),
+            'lhs': eval_expr('latest.close.tolist()[0]', latest, df),
+            'rhs': eval_expr('(latest.hhv_all_time.tolist()[0])', latest, df),
+            'lcol': 'Current Price',
+            'rcol': 'HHV All time'
+        }
+    ]
+
+    return checks
+
+
+
 def perform_health_checks(df, silent=False):
     df = df.sort_index(ascending=False)
     latest = get_latest_non_zero(df, [
@@ -393,6 +448,19 @@ def analyse_company(company_name, company_dataframe=None, data_type='standalone'
         result['dividends']['checks'] = d_checks
     result['dividends']['score'] = score
 
+    m_checks = None
+    score = None
+    try:
+        m_checks = perform_momentum_checks(DBUtil.get_technicals_as_df(company_name), silent=silent)
+        score = get_score_from_checks(m_checks)
+    except Exception as e:
+        if not silent:
+            print(f"[{company_name}]Exception during momentum checks. Exception: {e}")
+    result['momentum'] = {}
+    if not score_only:
+        result['momentum']['checks'] = m_checks
+    result['momentum']['score'] = score
+
     return result
 
 
@@ -408,13 +476,15 @@ def analysis_report(comp, app=None):
                 'dividends': a_r['standalone']['dividends']['score'],
                 'valuation': a_r['standalone']['valuation']['score'],
                 'performance': a_r['standalone']['performance']['score'],
-                'health': a_r['standalone']['health']['score']
+                'health': a_r['standalone']['health']['score'],
+                'momentum': a_r['standalone']['momentum']['score']
             },
             'consolidated': {
                 'dividends': a_r['consolidated']['dividends']['score'],
                 'valuation': a_r['consolidated']['valuation']['score'],
                 'performance': a_r['consolidated']['performance']['score'],
-                'health': a_r['consolidated']['health']['score']
+                'health': a_r['consolidated']['health']['score'],
+                'momentum': a_r['consolidated']['momentum']['score']
             }
         }
         return info
@@ -425,10 +495,11 @@ def assign_ranks(df):
     df['health_rank'] = df.health.rank(ascending=False)
     df['performance_rank'] = df.performance.rank(ascending=False)
     df['valuation_rank'] = df.valuation.rank(ascending=False)
+    df['momentum_rank'] = df.momentum.rank(ascending=False)
+
+
     length = len(df)
-    df['Score'] = (length - df['dividends_rank']) + (length - df['health_rank']) + (length - df['performance_rank']) + (
-    length - df[
-        'valuation_rank'])
+    df['Score'] = (length - df['dividends_rank']) + (length - df['health_rank']) + (length - df['performance_rank']) + (length - df['valuation_rank']) + (length - df['momentum_rank'])
     df = df.sort_values(by='Score', ascending=False)
     return df
 

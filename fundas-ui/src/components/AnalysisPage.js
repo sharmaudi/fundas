@@ -12,7 +12,7 @@ class AnalysisPage extends Component {
     render() {
         const {dataType} = this.props.match.params || 'standalone';
         const company = this.props.company;
-        const categories = ['Valuation', 'Performance', 'Health', 'Dividends'
+        const categories = ['Valuation', 'Performance', 'Health', 'Dividends', 'Momentum'
         ];
 
 
@@ -31,10 +31,11 @@ class AnalysisPage extends Component {
                 const scores = [analysisDataSet.valuation.score,
                     analysisDataSet.performance.score,
                     analysisDataSet.health.score,
-                    analysisDataSet.dividends.score
+                    analysisDataSet.dividends.score,
+                    analysisDataSet.momentum.score
                 ];
 
-                const acceptableScores = [5, 6, 6, 3];
+                const acceptableScores = [5, 6, 6, 3, 6];
                 return (
 
                     <div>
@@ -109,6 +110,18 @@ class AnalysisPage extends Component {
                                 scores={analysisDataSet.dividends.checks}
                                 acceptableScore={3}
                                 totalScore={analysisDataSet.dividends.score}
+                                company={company}
+                            />
+
+                        </div>
+
+                        <div className="col-xs-12 col-md-12 col-lg-12">
+
+                            <Scores
+                                title={"Momentum Score"}
+                                scores={analysisDataSet.momentum.checks}
+                                acceptableScore={6}
+                                totalScore={analysisDataSet.momentum.score}
                                 company={company}
                             />
 

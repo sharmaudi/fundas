@@ -38,6 +38,14 @@ class PriceChart extends Component {
             chart: {
                 height: styles.div.height
             },
+            legend: {
+                enabled: true,
+                align: 'center',
+                verticalAlign: 'top',
+                y: 30,
+                floating: true
+
+            },
             rangeSelector: {
                 selected: 4
             },
@@ -51,6 +59,7 @@ class PriceChart extends Component {
                 name: this.props.companyName,
                 data: data,
                 step: true,
+                showInLegend:false,
                 tooltip: {
                     valueDecimals: 2
                 }
@@ -82,6 +91,14 @@ class PriceChart extends Component {
         return {
             chart: {
                 height: styles.div.height / 2
+            },
+            legend: {
+                enabled: true,
+                align: 'center',
+                verticalAlign: 'top',
+                y: 30,
+                floating: true
+
             },
             rangeSelector: {
                 selected: 4

@@ -347,6 +347,33 @@ def update_prices():
     }), 202
 
 
+@api.route('/api/v1/tasks/update_companies', methods=['GET'])
+@api.route('/api/v1/tasks/update_companies/', methods=['GET'])
+@csrf.exempt
+@cross_origin()
+def update_companies():
+    from app.blueprints.api.tasks import update_companies
+    update_companies.delay()
+
+    return jsonify({
+        'status': 'success'
+    }), 202
+
+
+@api.route('/api/v1/tasks/update_screener', methods=['GET'])
+@api.route('/api/v1/tasks/update_screener/', methods=['GET'])
+@csrf.exempt
+@cross_origin()
+def update_screener():
+    from app.blueprints.api.tasks import update_screener
+    update_screener.delay()
+
+    return jsonify({
+        'status': 'success'
+    }), 202
+
+
+
 def datetime_handler(x):
     if isinstance(x, datetime.datetime):
         return x.isoformat()

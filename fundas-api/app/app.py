@@ -3,9 +3,9 @@ import os
 
 import pytz as pytz
 import requests
-from flask import Flask, render_template, session, flash, request, jsonify
+from flask import Flask, render_template, session, flash
+from flask.ext.cache import Cache
 from flask_breadcrumbs import Breadcrumbs
-from flask_cors import cross_origin
 from flask_dance.consumer import oauth_authorized
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 from flask_dance.contrib.facebook import make_facebook_blueprint
@@ -21,20 +21,12 @@ from app.blueprints.fundas.views import fundas
 from app.blueprints.user.models import User, OAuth
 from app.blueprints.user.views import user_blueprint
 from app.extensions import login_manager, csrf, debug_toolbar, db
-from app.util import DataAccess
 from app.util.JSONEncoder import CustomJSONEncoder
-from flask.ext.cache import Cache
-import time
-from celery import Celery
-
-CELERY_TASK_LIST = [
-
-]
 
 
 def create_celery_app(app=None):
     app = app or create_app()
-    celery = CeleryApp(app, celery_task_list=CELERY_TASK_LIST)
+    celery = CeleryApp(app)
     return celery
 
 

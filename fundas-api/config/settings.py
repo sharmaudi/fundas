@@ -57,13 +57,29 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_REDIS_MAX_CONNECTIONS = 5
-CELERYBEAT_SCHEDULE = {
-    'refresh-price-data': {
-        'task': 'app.blueprints.api.tasks.refresh_prices',
-        'schedule': crontab(hour=0, minute=1)
+CELERY_ROUTES = {
+    'app.blueprints.api.tasks.update_companies': {
+        'queue': 'periodic'
     },
-    'refresh-screener-data': {
-        'task': 'app.blueprints.api.tasks.refresh_screener_data',
-        'schedule': crontab(hour=0, minute=1)
-    },
+    'app.blueprints.api.tasks.update_screener': {
+        'queue': 'periodic'
+    }
 }
+CELERYBEAT_SCHEDULE = {
+    'update-companies': {
+        'task': 'app.blueprints.api.tasks.update_companies',
+        'schedule': crontab(hour=f'*/24')
+    },
+    'update-screener': {
+        'task': 'app.blueprints.api.tasks.update_screener',
+        'schedule': crontab(hour=f'*/48')
+    }
+
+}
+CELERY_ONCE_CONFIG = {
+            'backend': 'celery_once.backends.Redis',
+            'settings': {
+                'url': CELERY_RESULT_BACKEND,
+                'default_timeout': 60 * 60
+            }
+        }

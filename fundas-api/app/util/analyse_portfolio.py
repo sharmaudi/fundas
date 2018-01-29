@@ -9,8 +9,10 @@ import pandas as pd
 import quandl as q
 from dateutil.parser import parse
 
+from app.blueprints.api.models import CompanyInfo
 from app.util import DataAccess, DBUtil, Analyzer
 from app.util.PathResolver import resolve_data
+from app.util.TaskHandler import TaskHandler
 
 q_api_key = 'R27JMJXy2W-fLV6LX48P'
 
@@ -104,9 +106,9 @@ def getMarketValue(date, openPositions, startDate, endDate, split_data=None):
         currentTotalValue = currentTotalValue + currentValue
         openPositions[key].update({'current_price': close})
         totalAmount = totalAmount + amount
-    # print('close prices for {} on date {} : {}. Current profit is {}. Quantity:{}. Original Amount:{}'.format(comp,date,close,currentProfit,quantity,amount))
+        # print('close prices for {} on date {} : {}. Current profit is {}. Quantity:{}. Original Amount:{}'.format(comp,date,close,currentProfit,quantity,amount))
 
-    #    print('Portfolio profit on {} is {}'.format(date,(currentTotalValue - totalAmount)))
+    # print('Portfolio profit on {} is {}'.format(date, (currentTotalValue - totalAmount)))
     return currentTotalValue
 
 
@@ -327,6 +329,7 @@ def execute(local_filename='/Users/Udit/Dropbox/Watchlist/tradebook.xlsx', app=N
             'typeCode': typeCode,
             'symbol': symbol,
             'quantity': qty,
+            'exchange': exchange,
             'pricePerShare': rate,
             'amount': float(qty) * float(rate),
             'orderNumber': orderNumber
@@ -336,15 +339,32 @@ def execute(local_filename='/Users/Udit/Dropbox/Watchlist/tradebook.xlsx', app=N
 
     # Combine order numbers
     transactions_df = pd.DataFrame(transactions_list, index=index_list)
-    group = transactions_df.groupby(['date', 'orderNumber', 'symbol', 'typeCode'])
+    group = transactions_df.groupby(['date', 'orderNumber', 'symbol', 'typeCode', 'exchange'])
     aggregations = {
         'quantity': 'sum',
         'pricePerShare': 'mean',
         'amount': 'sum',
     }
 
+
     transactions_df = group.agg(aggregations).reset_index()
-    print(transactions_df)
+
+    th = TaskHandler(app=app)
+
+    info_list = []
+
+    added_list = []
+
+    for c in transactions_df.symbol.tolist():
+        if c not in added_list:
+            added_list.append(c)
+            info = CompanyInfo.query.get(c)
+            if info:
+                info_list.append(CompanyInfo.query.get(c))
+            else:
+                print(f"[{c}] not found in the database.")
+
+    th.update_company_details(info_list)
 
     portfolio = create_portfolio(500000, transactions_df, split_data=splits)
 
@@ -358,6 +378,10 @@ def execute(local_filename='/Users/Udit/Dropbox/Watchlist/tradebook.xlsx', app=N
     portfolio_index1 = create_portfolio(500000, index_df1, split_data={})
     portfolio_index2 = create_portfolio(500000, index_df2, split_data={})
 
+    os.remove(resolve_data("portfolio.pkl"))
+    os.remove(resolve_data("portfolio_index1.pkl"))
+    os.remove(resolve_data("portfolio_index2.pkl"))
+
     with open(resolve_data("portfolio.pkl"), 'wb') as f:
         pickle.dump(portfolio, f, pickle.HIGHEST_PROTOCOL)
 
@@ -370,7 +394,11 @@ def execute(local_filename='/Users/Udit/Dropbox/Watchlist/tradebook.xlsx', app=N
     company_list = [val for val in portfolio['openPositions'].keys()]
 
     df_c, error_list = Analyzer.analyse_list(company_list, app=app)
-    pickle.dump(df_c, open(resolve_data('portfolio-companies.pkl'), "wb"))
+
+    os.remove(resolve_data("portfolio-companies.pkl"))
+    with open(resolve_data('portfolio-companies.pkl'), "wb") as f:
+        pickle.dump(df_c, f, pickle.HIGHEST_PROTOCOL)
+
 
 
 if __name__ == "__main__":

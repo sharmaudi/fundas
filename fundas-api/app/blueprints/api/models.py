@@ -33,17 +33,6 @@ class CompanyInfo(db.Model, ResourceMixin):
         if not l_s or not l_c:
             print('Company doesnt exist in database. Getting details from Screener')
             info, l_s, l_c = CompanyInfo.create_from_screener(info)
-        else:
-            print('Company found. Check create time')
-            # Convert to Unix timestamp
-            d1_ts = time.mktime(current_datetime.timetuple())
-            d2_ts = time.mktime(info.updated_on.timetuple())
-            time_elapsed = (d1_ts - d2_ts)/60
-            print(f"Company was updated {time_elapsed} minutes ago.")
-            if (not info.screener_code) or time_elapsed > 5 * 24 * 7:
-                print('Company details are old. Getting latest from Screener')
-                info, l_s, l_c = CompanyInfo.create_from_screener(info)
-
         return info, l_s, l_c
 
     @classmethod
@@ -117,7 +106,8 @@ class LatestConsolidated(db.Model, ResourceMixin):
 class Technicals(db.Model, ResourceMixin):
     __tablename__ = 'technicals'
     symbol = db.Column(db.String, primary_key=True)
-    historicals = relationship('TechnicalsHistorical', backref='technicals', passive_deletes=True)
+    historicals = relationship('TechnicalsHistorical',
+                               cascade="all, delete-orphan")
     latest_price = db.Column(db.Float)
     splits = db.Column(db.JSON)
     roc30 = db.Column(db.Float)

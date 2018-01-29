@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import compose from "recompose/compose";
 import withWidth from "material-ui/utils/withWidth";
 import ReactHighchart from 'react-highcharts'
+import moment from "moment";
 
 class EquityCurveChart extends Component {
 
@@ -49,13 +50,19 @@ class EquityCurveChart extends Component {
 
             series: [{
                 name: 'Portfolio',
-                data: perf.equityCurve
+                data: perf.equityCurve.map( arr => {
+                    return [moment(arr[0],'YYYY-MM-DD').valueOf(), arr[1]]
+                })
             }, {
                 name: 'JUNIORBEES',
-                data: perf.equityCurveJNF
+                data: perf.equityCurveJNF.map( arr => {
+                    return [moment(arr[0], 'YYYY-MM-DD').valueOf(), arr[1]]
+                })
             }, {
                 name: 'NIFTYBEES',
-                data: perf.equityCurveNF
+                data: perf.equityCurveNF.map( arr => {
+                    return [moment(arr[0], 'YYYY-MM-DD').valueOf(), arr[1]]
+                })
             }]
         }
 

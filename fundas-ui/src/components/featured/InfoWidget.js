@@ -98,9 +98,9 @@ export default class InfoWidget extends React.Component {
                             company={company}
                             height={this.props.height - 50}
                             width={this.props.width}
-                            scores={[scores.performance, scores.health, scores.valuation, scores.dividends]}
-                            metrics={['performance','health', 'valuation', 'dividends']}
-                            acceptableScores={[7,6,5,3]}
+                            scores={[scores.performance, scores.health, scores.valuation, scores.dividends, scores.momentum]}
+                            metrics={['performance','health', 'valuation', 'dividends', 'momentum']}
+                            acceptableScores={[7,6,5,3,8]}
                             showLink={true}
                             linkDataType={dataType}
                         />

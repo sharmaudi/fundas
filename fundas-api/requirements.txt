@@ -46,3 +46,4 @@ Flask-Cors
 simplejson
 xlrd
 celery
+celery_once
